@@ -1,0 +1,14 @@
+Cut,Group,Events Passing,Absolute [%],Relative [%],Description
+No cuts,N/A,97979,100.0,100.0,No selection applied
+is_reco_positron,,61916,63.19313322242521,63.19313322242521,Tracks are assumed to be positron (trk)
+has_downstream,,29507,30.1156370242603,47.656502358033464,Downstream tracks (p_z > 0 through tracker)
+has_trk_front_seg,,29194,29.796180814256118,98.93923475785407,Track has >=1 segment intersecting TT_Front
+good_trkpid,,3693,3.7691750273017686,12.649859560183598,Track PID > 0.638
+within_t0err,,3672,3.747741863052287,99.43135662063362,t0err < 0.9
+has_hits,,2829,2.8873534124659366,77.04248366013073,Minimum of 20 active hits in the tracker
+has_st,,1007,1.0277712571061146,35.59561682573347,has Nst > 0
+no_opa,,986,1.0063380928566326,97.91459781529295,has N_opa == 0
+no_crv_quality,,939,0.9583686300125537,95.23326572008114,"No high-quality CRV coincidence (PEs>25, nHits>=15, span<175ns)"
+no_crv_timewindow,,937,0.9563273762745078,99.78700745473908,No CRV coincidence with start>429 and end<1700 within dt threshold
+no_crv_veto,,937,0.9563273762745078,100.0,No crv-trk veto: |dt| >= 150 ns
+pz_over_pt,,883,0.9012135253472683,94.23692636072573,Track-level cut: 0.5 < pz/pt < 1.0 (pt = transverse mag)

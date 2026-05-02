@@ -3,732 +3,435 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mu2e MDS3a Analysis Dashboard</title>
+    <title>Mu2e Reference Analysis Dashboard</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
         }
-        
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
         }
-        
+
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 40px;
             text-align: center;
         }
-        
+
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
         }
-        
+
         .header p {
             font-size: 1.1em;
             opacity: 0.95;
         }
-        
+
+        .nav {
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 15px 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav button {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav button:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .nav button.active {
+            background: #667eea;
+            color: white;
+        }
+
         .content {
-            padding: 40px;
+            padding: 30px;
         }
-        
+
         .section {
-            margin-bottom: 50px;
+            display: none;
         }
-        
+
+        .section.active {
+            display: block;
+        }
+
         .section h2 {
             color: #667eea;
-            font-size: 1.8em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .section h2::before {
-            content: '';
-            display: inline-block;
-            width: 5px;
-            height: 30px;
-            background: #764ba2;
-            border-radius: 3px;
-        }
-        
-        .info-box {
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-            padding: 20px;
-            border-radius: 5px;
             margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
         }
-        
-        .info-box h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 1.1em;
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
         }
-        
-        .info-box p {
-            line-height: 1.6;
-            color: #555;
-        }
-        
-        .cuts-table {
+
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-radius: 5px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 6px;
             overflow: hidden;
         }
-        
-        .cuts-table thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        table thead {
+            background: #667eea;
             color: white;
-            position: sticky;
-            top: 0;
         }
-        
-        .cuts-table th {
+
+        table th {
             padding: 15px;
             text-align: left;
             font-weight: 600;
         }
-        
-        .cuts-table td {
+
+        table td {
             padding: 12px 15px;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #dee2e6;
         }
-        
-        .cuts-table tbody tr {
-            transition: background-color 0.3s;
-        }
-        
-        .cuts-table tbody tr:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .cuts-table tbody tr:nth-child(even) {
-            background-color: #fafafa;
-        }
-        
-        .cuts-table .cut-name {
-            font-weight: 500;
-            color: #667eea;
-        }
-        
-        .progress-bar {
-            display: inline-block;
-            width: 200px;
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            vertical-align: middle;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.3s;
-        }
-        
-        .plots-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 30px;
-            margin-top: 25px;
-        }
-        
-        .plot-card {
+
+        table tbody tr:hover {
             background: #f8f9fa;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
         }
-        
-        .plot-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+
+        table tbody tr:nth-child(even) {
+            background: #f9f9f9;
         }
-        
-        .plot-title {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
-            font-weight: 600;
-        }
-        
-        .plot-content {
-            padding: 20px;
-            min-height: 350px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        
-        .plot-image {
-            max-width: 100%;
-            max-height: 500px;
-            border-radius: 5px;
-        }
-        
-        .plot-placeholder {
-            color: #999;
-            font-style: italic;
-        }
-        
-        .feature-plots {
+
+        .plot-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
-        
-        .feature-plot-card {
+
+        .plot-card {
             background: white;
-            border: 1px solid #ddd;
+            border: 1px solid #dee2e6;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
-        .feature-plot-title {
-            background: #667eea;
-            color: white;
-            padding: 12px 15px;
-            font-weight: 600;
-            font-size: 0.95em;
+
+        .plot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
         }
-        
-        .feature-plot-content {
-            padding: 15px;
-            min-height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .summary-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        }
-        
-        .summary-card h4 {
-            font-size: 0.95em;
-            opacity: 0.9;
-            margin-bottom: 10px;
-            font-weight: 400;
-            letter-spacing: 1px;
-        }
-        
-        .summary-card .value {
-            font-size: 2.2em;
-            font-weight: bold;
-        }
-        
-        .summary-card .unit {
-            font-size: 0.8em;
-            opacity: 0.8;
-            margin-top: 5px;
-        }
-        
-        .footer {
+
+        .plot-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
             background: #f8f9fa;
-            border-top: 1px solid #e0e0e0;
-            padding: 30px 40px;
+            display: block;
+        }
+
+        .plot-card .plot-title {
+            padding: 15px;
+            font-weight: 600;
+            color: #333;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .plot-card .plot-link {
+            padding: 10px 15px;
+            background: white;
+            display: block;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9em;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .plot-card .plot-link:hover {
+            background: #f0f0f0;
+        }
+
+        .status-box {
+            background: #f0f7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .status-box.success {
+            background: #f0fdf4;
+            border-left-color: #22c55e;
+            color: #166534;
+        }
+
+        .status-box.warning {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+            color: #92400e;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        footer {
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            padding: 20px;
             text-align: center;
             color: #666;
-        }
-        
-        .footer p {
-            margin: 5px 0;
-            font-size: 0.95em;
-        }
-        
-        .timestamp {
-            color: #999;
             font-size: 0.9em;
-            margin-top: 10px;
-        }
-        
-        .badge {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: 600;
-            margin-right: 8px;
-            margin-bottom: 8px;
-        }
-        
-        .documentation {
-            background: #e8f4f8;
-            border-left: 4px solid #667eea;
-            padding: 15px 20px;
-            border-radius: 5px;
-            margin-top: 15px;
-            font-size: 0.95em;
-        }
-        
-        .documentation h4 {
-            color: #667eea;
-            margin-bottom: 8px;
-        }
-        
-        .documentation ul {
-            margin-left: 20px;
-            line-height: 1.8;
-        }
-        
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8em;
-            }
-            
-            .plots-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .feature-plots {
-                grid-template-columns: 1fr;
-            }
-            
-            .content {
-                padding: 20px;
-            }
-            
-            .summary-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔬 Mu2e Analysis Dashboard</h1>
-            <p>MDS3a Sample Projections & Selection Optimization</p>
+            <h1>🎯 Mu2e Reference Analysis Dashboard</h1>
+            <p>Cut Statistics & Optimization Plots from pyCount</p>
         </div>
-        
+
+        <div class="nav">
+            <button class="nav-btn active" data-section="overview">Overview</button>
+            <button class="nav-btn" data-section="statistics">Cut Statistics</button>
+            <button class="nav-btn" data-section="optimization">Optimization Plots</button>
+            <button class="nav-btn" data-section="distributions">Distributions</button>
+            <button class="nav-btn" data-section="documentation">Documentation</button>
+        </div>
+
         <div class="content">
             <!-- Overview Section -->
-            <div class="section">
-                <h2>Analysis Overview</h2>
-                
-                <div class="summary-grid">
-                    <div class="summary-card">
-                        <h4>SAMPLE</h4>
-                        <div class="value">MDS3a</div>
-                        <div class="unit">MC Dataset</div>
-                    </div>
-                    <div class="summary-card">
-                        <h4>SELECTION STATUS</h4>
-                        <div class="value">Optimized</div>
-                        <div class="unit">cuts & windows</div>
-                    </div>
-                    <div class="summary-card">
-                        <h4>ANALYSIS TYPE</h4>
-                        <div class="value">Signal</div>
-                        <div class="unit">Muon Conversion</div>
-                    </div>
+            <div class="section active" id="overview">
+                <h2>Analysis Results Overview</h2>
+                <div class="status-box success">
+                    <strong>✓ Ready to Display Results</strong><br>
+                    This dashboard displays the latest analysis outputs from the pyCount directory.
                 </div>
-                
-                <div class="info-box">
-                    <h3>About This Analysis</h3>
-                    <p>
-                        This dashboard presents results from the Mu2e charged lepton flavor violation (CLFV) analysis,
-                        focusing on muon-to-electron conversion (μ⁻ → e⁻). The analysis optimizes track quality cuts,
-                        detector veto conditions, and momentum/time windows to maximize signal sensitivity while minimizing
-                        background contamination. Results are displayed using the latest MDS3a Monte Carlo sample.
-                    </p>
-                </div>
+                <p style="margin-bottom: 15px; line-height: 1.6;">
+                    Welcome to the Mu2e Reference Analysis Dashboard. This page provides an interactive view of:
+                </p>
+                <ul style="margin-left: 30px; margin-bottom: 20px; line-height: 1.8;">
+                    <li><strong>Cut Statistics</strong>: Detailed event counts and efficiency metrics from cut_stats.csv</li>
+                    <li><strong>Optimization Plots</strong>: Selection optimization plots (*_selection.pdf)</li>
+                    <li><strong>Distribution Plots</strong>: 1D and 2D analysis plots (momentum, time)</li>
+                </ul>
+                <p style="color: #666;">
+                    Use the navigation buttons above to explore different sections of the analysis results.
+                </p>
             </div>
-            
-            <!-- Event Selection Cuts -->
-            <div class="section">
-                <h2>Event Selection Cuts</h2>
-                
-                <div class="info-box">
-                    <h3>Cut Flow Summary</h3>
-                    <p>
-                        Below is the complete selection flow showing how many events pass each stage of the analysis.
-                        The "Absolute %" shows the fraction relative to no selection, while "Relative %" shows the
-                        fraction relative to the previous cut. All efficiency measurements are based on MDS3a sample.
-                    </p>
-                </div>
-                
-                <table class="cuts-table" id="cutsTable">
-                    <thead>
-                        <tr>
-                            <th>Cut Name</th>
-                            <th>Group</th>
-                            <th>Events Passing</th>
-                            <th>Absolute %</th>
-                            <th>Relative %</th>
-                            <th>Efficiency</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cutsTableBody">
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 30px; color: #999;">
-                                Loading cut statistics...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+
+            <!-- Statistics Section -->
+            <div class="section" id="statistics">
+                <h2>Cut Statistics</h2>
+                <div id="table-status" class="status-box">Loading cut_stats.csv...</div>
+                <div class="table-container" id="table-container"></div>
             </div>
-            
-            <!-- Momentum & Time Optimization -->
-            <div class="section">
-                <h2>Optimization Results</h2>
-                
-                <div class="info-box">
-                    <h3>Momentum & Time Window Optimization</h3>
-                    <p>
-                        These plots show the optimization of the signal region in momentum and time space.
-                        The analysis searches for the window that maximizes S/√B (signal-to-noise figure of merit).
-                        These are typically the final 1D and 2D distributions used for counting events.
-                    </p>
-                </div>
-                
-                <div class="plots-grid">
-                    <div class="plot-card">
-                        <div class="plot-title">📊 Momentum Distribution (Selected Events)</div>
-                        <div class="plot-content">
-                            <div id="momPlotContainer" style="width: 100%; text-align: center;">
-                                <img src="1D_Mom_selected.pdf" alt="Momentum distribution" class="plot-image" 
-                                     onerror="this.parentElement.innerHTML='<div class=\"plot-placeholder\">Plot file: 1D_Mom_selected.pdf<br><small>Run optimize_momentum.py to generate</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="plot-card">
-                        <div class="plot-title">⏱️ Time Distribution (Selected Events)</div>
-                        <div class="plot-content">
-                            <div id="timePlotContainer" style="width: 100%; text-align: center;">
-                                <img src="1D_Time_selected.pdf" alt="Time distribution" class="plot-image"
-                                     onerror="this.parentElement.innerHTML='<div class=\"plot-placeholder\">Plot file: 1D_Time_selected.pdf<br><small>Run optimize_momentum.py to generate</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="plot-card" style="grid-column: 1 / -1;">
-                        <div class="plot-title">2️⃣ 2D Momentum × Time Optimization</div>
-                        <div class="plot-content" style="min-height: 450px;">
-                            <div id="mom2dPlotContainer" style="width: 100%; text-align: center;">
-                                <img src="2D_selected.pdf" alt="2D momentum-time distribution" class="plot-image"
-                                     onerror="this.parentElement.innerHTML='<div class=\"plot-placeholder\">Plot file: 2D_selected.pdf<br><small>Shows optimized signal region in momentum × time space</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+            <!-- Optimization Plots Section -->
+            <div class="section" id="optimization">
+                <h2>Optimization Plots</h2>
+                <p style="margin-bottom: 20px; color: #666;">
+                    Selection optimization plots showing efficiency vs. background rejection for various cut criteria.
+                </p>
+                <div class="plot-gallery" id="optimization-gallery"></div>
             </div>
-            
-            <!-- Feature Analysis Plots -->
-            <div class="section">
-                <h2>Feature Analysis Plots</h2>
-                
-                <div class="info-box">
-                    <h3>Key Selection Variables</h3>
-                    <p>
-                        These plots show the distributions of key selection variables for signal and background processes.
-                        Generated from machine learning analysis to understand variable importance and separation power.
-                    </p>
-                </div>
-                
-                <div class="feature-plots">
-                    <div class="feature-plot-card">
-                        <div class="feature-plot-title">📈 Reconstructed Momentum</div>
-                        <div class="feature-plot-content">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_feature_recomom.png" alt="ML feature: reconstructed momentum" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_feature_recomom.png<br><small>Run MLSelect.py to generate</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-plot-card">
-                        <div class="feature-plot-title">⏱️ Reconstructed Time</div>
-                        <div class="feature-plot-content">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_feature_recotime.png" alt="ML feature: reconstructed time" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_feature_recotime.png<br><small>Run MLSelect.py to generate</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-plot-card">
-                        <div class="feature-plot-title">🔧 Straw Tracker Hits (NST)</div>
-                        <div class="feature-plot-content">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_feature_nst.png" alt="ML feature: NST" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_feature_nst.png<br><small>Run MLSelect.py to generate</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-plot-card">
-                        <div class="feature-plot-title">🎯 Out-of-time Protons (OPA)</div>
-                        <div class="feature-plot-content">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_feature_nopa.png" alt="ML feature: OPA count" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_feature_nopa.png<br><small>Run MLSelect.py to generate</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-plot-card">
-                        <div class="feature-plot-title">📍 CRV Distance</div>
-                        <div class="feature-plot-content">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_feature_closest_crv_diff.png" alt="ML feature: CRV distance" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_feature_closest_crv_diff.png<br><small>Run MLSelect.py to generate</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-plot-card">
-                        <div class="feature-plot-title">🆔 Track PID</div>
-                        <div class="feature-plot-content">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_feature_trkpid.png" alt="ML feature: track PID" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_feature_trkpid.png<br><small>Run MLSelect.py to generate</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-plot-card">
-                        <div class="feature-plot-title">✅ Track Quality</div>
-                        <div class="feature-plot-content">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_feature_trkqual.png" alt="ML feature: track quality" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_feature_trkqual.png<br><small>Run MLSelect.py to generate</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+            <!-- Distributions Section -->
+            <div class="section" id="distributions">
+                <h2>Distribution Plots</h2>
+                <p style="margin-bottom: 20px; color: #666;">
+                    1D and 2D analysis plots from the pyCount run_count analysis.
+                </p>
+                <div class="plot-gallery" id="distributions-gallery"></div>
             </div>
-            
-            <!-- Machine Learning Analysis -->
-            <div class="section">
-                <h2>Machine Learning Selection Analysis</h2>
-                
-                <div class="info-box">
-                    <h3>ML Classifier Performance</h3>
-                    <p>
-                        Machine learning models (XGBoost) trained on signal vs background can provide
-                        improved signal efficiency at fixed background rejection compared to cut-based
-                        analysis. The plots below show the classifier performance metrics.
-                    </p>
-                </div>
-                
-                <div class="plots-grid">
-                    <div class="plot-card">
-                        <div class="plot-title">📊 ROC Curve</div>
-                        <div class="plot-content">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_roc.png" alt="ML ROC curve" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_roc.png<br><small>Receiver Operating Characteristic</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="plot-card">
-                        <div class="plot-title">⭐ Feature Importance</div>
-                        <div class="plot-content">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_feature_importance.png" alt="ML feature importance" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_feature_importance.png<br><small>XGBoost feature importance ranking</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="plot-card">
-                        <div class="plot-title">🎲 ML Score Distribution</div>
-                        <div class="plot-content">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_score_dist.png" alt="ML score distribution" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_score_dist.png<br><small>Full range classifier output</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="plot-card">
-                        <div class="plot-title">🔍 ML Score Distribution (Zoom)</div>
-                        <div class="plot-content">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_score_dist_zoom.png" alt="ML score distribution zoomed" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_score_dist_zoom.png<br><small>Zoomed view of high-score region</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="plot-card" style="grid-column: 1 / -1;">
-                        <div class="plot-title">📈 Efficiency vs ML Score Threshold</div>
-                        <div class="plot-content" style="min-height: 350px;">
-                            <div style="width: 100%; text-align: center;">
-                                <img src="ml_efficiency_vs_threshold.png" alt="ML efficiency vs threshold" class="plot-image"
-                                     onerror="this.innerHTML='<div class=\"plot-placeholder\">ml_efficiency_vs_threshold.png<br><small>Signal efficiency as function of classifier threshold</small></div>'">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Documentation -->
-            <div class="section">
+
+            <!-- Documentation Section -->
+            <div class="section" id="documentation">
                 <h2>Documentation</h2>
-                
-                <div class="documentation">
-                    <h4>Generated Plot Files</h4>
-                    <p>The following plot files are referenced by this dashboard:</p>
-                    <ul>
-                        <li><strong>Optimization:</strong> 1D_Mom_selected.pdf, 1D_Time_selected.pdf, 2D_selected.pdf</li>
-                        <li><strong>Feature Plots:</strong> ml_feature_*.png (recomom, recotime, nst, nopa, closest_crv_diff, trkpid, trkqual)</li>
-                        <li><strong>ML Analysis:</strong> ml_roc.png, ml_feature_importance.png, ml_score_dist.png, ml_score_dist_zoom.png, ml_efficiency_vs_threshold.png</li>
-                    </ul>
-                </div>
-                
-                <div class="documentation" style="margin-top: 20px;">
-                    <h4>Generate Missing Plots</h4>
-                    <p>If plots are missing, run the following analysis scripts:</p>
-                    <ul>
-                        <li><code>python optimize_momentum.py</code> - Generate 1D and 2D momentum/time optimization plots</li>
-                        <li><code>python MLSelect.py</code> - Generate ML feature importance and selection analysis plots</li>
-                        <li><code>python count.py</code> - Generate selected event distributions</li>
-                    </ul>
-                </div>
-                
-                <div class="info-box" style="margin-top: 20px;">
-                    <h3>Analysis References</h3>
-                    <p>
-                        For more information about this analysis framework, see the <strong>README.md</strong> file
-                        in the pyCount directory. It contains detailed information about the complete analysis workflow,
-                        including data processing, cut optimization, and sensitivity calculations.
-                    </p>
-                </div>
+                <p style="margin-bottom: 20px; line-height: 1.8;">
+                    For detailed analysis information and workflow documentation, see:
+                </p>
+                <ul style="margin-left: 30px; margin-bottom: 20px; line-height: 1.8;">
+                    <li><a href="ANALYSIS_DASHBOARD.md" style="color: #667eea; text-decoration: none; font-weight: 600;">ANALYSIS_DASHBOARD.md</a> - Analysis overview and documentation</li>
+                    <li><a href="../AUTOMATION.md" style="color: #667eea; text-decoration: none; font-weight: 600;">AUTOMATION.md</a> - Automation workflow details</li>
+                    <li><a href="../QUICKSTART.md" style="color: #667eea; text-decoration: none; font-weight: 600;">QUICKSTART.md</a> - Quick reference guide</li>
+                </ul>
+                <p style="color: #666;">
+                    View the source files in the parent pyCount directory or browse the anadash repository on GitHub.
+                </p>
             </div>
         </div>
-        
-        <div class="footer">
-            <p><strong>Mu2e Rare Decay Analysis</strong> | MDS3a Monte Carlo Sample</p>
-            <p>Frame Release: newOffline | Analysis Type: Charged Lepton Flavor Violation</p>
-            <div class="timestamp" id="timestamp"></div>
-        </div>
+
+        <footer>
+            <p>Mu2e Reference Analysis Dashboard | Last Updated: <span id="timestamp"></span></p>
+            <p><a href="../" style="color: #667eea; text-decoration: none;">← Back to pyCount Directory</a></p>
+        </footer>
     </div>
-    
+
     <script>
-        // Load and parse cut statistics CSV
-        function loadCutStatistics() {
-            fetch('cut_stats.csv')
-                .then(response => response.text())
-                .then(data => parseCutStats(data))
-                .catch(error => {
-                    console.log('Note: cut_stats.csv not loaded via fetch (may be due to CORS). Displaying static view.');
-                    displayStaticView();
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const section = btn.getAttribute('data-section');
+                
+                // Update active button
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update active section
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section).classList.add('active');
+            });
+        });
+
+        // Load and parse CSV
+        async function loadCutStats() {
+            try {
+                const response = await fetch('cut_stats.csv');
+                if (!response.ok) {
+                    document.getElementById('table-status').innerHTML = 
+                        '<strong style="color: #f59e0b;">⚠ cut_stats.csv not found</strong><br>Run analysis to generate cut statistics.';
+                    document.getElementById('table-status').className = 'status-box warning';
+                    return;
+                }
+
+                const csv = await response.text();
+                const lines = csv.trim().split('\n');
+                
+                if (lines.length < 2) {
+                    throw new Error('CSV file is empty');
+                }
+
+                const headers = lines[0].split(',').map(h => h.trim());
+                const rows = lines.slice(1).map(line => line.split(',').map(cell => cell.trim()));
+
+                // Create table
+                let html = '<table><thead><tr>';
+                headers.forEach(header => {
+                    html += `<th>${header}</th>`;
                 });
-        }
-        
-        function parseCutStats(csvText) {
-            const lines = csvText.trim().split('\n');
-            const tbody = document.getElementById('cutsTableBody');
-            tbody.innerHTML = '';
-            
-            // Skip header
-            for (let i = 1; i < lines.length; i++) {
-                const parts = lines[i].split(',');
-                if (parts.length < 6) continue;
-                
-                const cutName = parts[0].trim();
-                const group = parts[1].trim();
-                const eventsPassing = parts[2].trim();
-                const absolutePercent = parseFloat(parts[3]).toFixed(2);
-                const relativePercent = parseFloat(parts[4]).toFixed(2);
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="cut-name">${cutName}</td>
-                    <td>${group || '-'}</td>
-                    <td style="text-align: right; font-weight: 500;">${eventsPassing}</td>
-                    <td style="text-align: right;">${absolutePercent}%</td>
-                    <td>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${relativePercent}%"></div>
-                        </div>
-                        <span style="margin-left: 10px;">${relativePercent}%</span>
-                    </td>
-                    <td style="text-align: center;">${(absolutePercent / 100).toFixed(2)}</td>
-                `;
-                tbody.appendChild(row);
+                html += '</tr></thead><tbody>';
+
+                rows.forEach(row => {
+                    html += '<tr>';
+                    row.forEach(cell => {
+                        html += `<td>${cell}</td>`;
+                    });
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table>';
+
+                document.getElementById('table-container').innerHTML = html;
+                document.getElementById('table-status').innerHTML = 
+                    `<strong style="color: #22c55e;">✓ Loaded ${rows.length} rows from cut_stats.csv</strong>`;
+                document.getElementById('table-status').className = 'status-box success';
+
+            } catch (error) {
+                console.error('Error loading CSV:', error);
+                document.getElementById('table-status').innerHTML = 
+                    `<strong style="color: #ef4444;">✗ Error loading cut_stats.csv</strong><br>${error.message}`;
+                document.getElementById('table-status').className = 'status-box';
+                document.getElementById('table-status').style.borderLeftColor = '#ef4444';
             }
         }
-        
-        function displayStaticView() {
-            const tbody = document.getElementById('cutsTableBody');
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="6" style="padding: 20px; text-align: center; color: #666;">
-                        Cut statistics are available in <strong>cut_stats.csv</strong>. 
-                        Open this file from the command line or use a CSV viewer to inspect the detailed cut flow.
-                    </td>
-                </tr>
-            `;
-        }
-        
-        // Set timestamp
-        function updateTimestamp() {
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                timeZoneName: 'short'
+
+        // Load plots
+        async function loadPlots() {
+            const optimizationGallery = document.getElementById('optimization-gallery');
+            const distributionsGallery = document.getElementById('distributions-gallery');
+
+            // Define expected plots
+            const optimizationPlots = ['CE_selection.pdf', 'DIO_selection.pdf', 'RPC_selection.pdf', 'RMCE_selection.pdf', 'OnSpill_selection.pdf'];
+            const distributionPlots = [
+                { name: '1D_Mom.pdf', title: '1D Momentum Distribution' },
+                { name: '1D_Time.pdf', title: '1D Time Distribution' },
+                { name: '2D_Time.pdf', title: '2D Time Distribution' }
+            ];
+
+            // Load optimization plots
+            optimizationPlots.forEach(plot => {
+                const plotPath = plot;
+                const card = document.createElement('div');
+                card.className = 'plot-card';
+                card.innerHTML = `
+                    <div style="height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
+                        ${plot}
+                    </div>
+                    <div class="plot-title">${plot}</div>
+                    <a href="${plotPath}" class="plot-link" download>↓ Download PDF</a>
+                `;
+                optimizationGallery.appendChild(card);
             });
-            document.getElementById('timestamp').textContent = `Generated: ${dateStr}`;
+
+            if (optimizationPlots.length === 0) {
+                optimizationGallery.innerHTML = '<div class="empty-message">No optimization plots found. Run analysis to generate plots.</div>';
+            }
+
+            // Load distribution plots
+            distributionPlots.forEach(plot => {
+                const plotPath = plot.name;
+                const card = document.createElement('div');
+                card.className = 'plot-card';
+                card.innerHTML = `
+                    <div style="height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
+                        ${plot.name}
+                    </div>
+                    <div class="plot-title">${plot.title}</div>
+                    <a href="${plotPath}" class="plot-link" download>↓ Download PDF</a>
+                `;
+                distributionsGallery.appendChild(card);
+            });
+
+            if (distributionPlots.length === 0) {
+                distributionsGallery.innerHTML = '<div class="empty-message">No distribution plots found. Run analysis to generate plots.</div>';
+            }
         }
-        
+
         // Initialize on load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCutStatistics();
-            updateTimestamp();
+        window.addEventListener('load', () => {
+            const now = new Date();
+            document.getElementById('timestamp').textContent = now.toLocaleString();
+            loadCutStats();
+            loadPlots();
         });
     </script>
 </body>
