@@ -279,7 +279,7 @@
                     This dashboard displays the latest analysis outputs from the pyCount directory.
                 </div>
                 <p style="margin-bottom: 15px; line-height: 1.6;">
-                    The Mu2e experiment searches for charged-lepton flavor violating (CLFV) conversions of muons to electrons in the nuclear field. This process is forbidden in the Standard Model but predicted by many beyond-Standard-Model theories. The experiment aims to achieve unprecedented sensitivity to the muon-to-electron conversion process.
+                    The Mu2e experiment searches for charged-lepton flavor violating (CLFV) conversions of muons to electrons in the nuclear field. This process is heavily suppressed in the Standard Model but predicted by many beyond-Standard-Model theories. The experiment aims to achieve unprecedented sensitivity to the muon-to-electron conversion process.
                 </p>
                 <p style="margin-bottom: 15px; line-height: 1.6;">
                     <strong>Physics Background:</strong> The primary backgrounds to the signal are cosmic-ray-induced backgrounds, beam-related backgrounds (DIO - Decay In Orbit, RPC - Radiative Pion Capture) backgrounds. This analysis implements a comprehensive cut strategy to suppress these backgrounds while maintaining high signal efficiency for the Ce conversion signature.
@@ -440,8 +440,26 @@
 
         // Load and parse CSV
         async function loadCutStats() {
-            // Cut descriptions from analyze.py
-            const cutDescriptions = {
+            // Load cut descriptions from metadata file
+            let cutDescriptions = {};
+            try {
+                const metadataResponse = await fetch('cut_metadata.json');
+                if (metadataResponse.ok) {
+                    const metadata = await metadataResponse.json();
+                    // Build description lookup from metadata
+                    Object.entries(metadata.cuts).forEach(([key, cutData]) => {
+                        cutDescriptions[key] = cutData.description;
+                    });
+                    console.log('Loaded cut descriptions from cut_metadata.json');
+                } else {
+                    console.log('cut_metadata.json not found, using fallback descriptions');
+                }
+            } catch (e) {
+                console.log('Could not load cut_metadata.json, using fallback descriptions:', e);
+            }
+
+            // Fallback descriptions if metadata file not available
+            const fallbackDescriptions = {
                 'is_reco_electron': 'Tracks are assumed to be electrons based on tracking algorithm classification',
                 'one_reco_electron': 'Exactly one reconstructed electron per event',
                 'is_reco_positron': 'Tracks are assumed to be positrons based on tracking algorithm classification',
@@ -468,6 +486,9 @@
                 'early_time': 'Veto tracks with reflections - no loop helix fit requirement',
                 'reflected': 'Test cut - configuration dependent'
             };
+
+            // Use loaded descriptions, fall back to hardcoded if not found
+            const finalDescriptions = { ...fallbackDescriptions, ...cutDescriptions };
 
             try {
                 const response = await fetch('cut_stats.csv');
@@ -497,7 +518,7 @@
 
                 rows.forEach((row, rowIndex) => {
                     const cutName = row[0];
-                    const description = cutDescriptions[cutName] || 'No description available';
+                    const description = finalDescriptions[cutName] || 'No description available';
                     
                     // Main row with expand button
                     html += '<tr class="cut-row" data-cut="' + cutName + '">';
