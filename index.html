@@ -952,18 +952,26 @@
 
                 // Calculate scaling factors
                 const filesFrac = normData.files_fraction || (normData.nfiles_used / normData.nfiles_total);
-                const npotUsed = normData.beam_npot * filesFrac;
-                const nmotUsed = normData.beam_nmot * filesFrac;
+                const npotUsed = (normData.beam_npot !== undefined && normData.beam_npot !== null) ? normData.beam_npot * filesFrac : NaN;
+                const nmotUsed = (normData.beam_nmot !== undefined && normData.beam_nmot !== null) ? normData.beam_nmot * filesFrac : NaN;
+
+                const formatValue = (val) => {
+                    if (val === undefined || val === null || isNaN(val)) return 'N/A';
+                    if (typeof val === 'number' && Math.abs(val) > 1000) {
+                        return val.toExponential(2);
+                    }
+                    return val;
+                };
 
                 const scalingParams = [
-                    { label: 'Files Used / Total', value: `${normData.nfiles_used} / ${normData.nfiles_total}`, color: '#3b82f6' },
-                    { label: 'File Fraction', value: filesFrac.toExponential(4), color: '#3b82f6' },
-                    { label: 'NPOT Used', value: npotUsed.toExponential(2), color: '#f59e0b' },
-                    { label: 'NPOT Fraction', value: filesFrac.toExponential(4), color: '#f59e0b' },
-                    { label: 'NMOT Used', value: nmotUsed.toExponential(2), color: '#8b5cf6' },
-                    { label: 'NMOT Fraction', value: filesFrac.toExponential(4), color: '#8b5cf6' },
-                    { label: 'Signal Efficiency (e⁻)', value: `${(normData.signal_eff_eminus * 100).toFixed(1)}%`, color: '#ef4444' },
-                    { label: 'Signal Efficiency (e⁺)', value: `${(normData.signal_eff_eplus * 100).toFixed(1)}%`, color: '#06b6d4' }
+                    { label: 'Files Used / Total', value: `${normData.nfiles_used || 'N/A'} / ${normData.nfiles_total || 'N/A'}`, color: '#3b82f6' },
+                    { label: 'File Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#3b82f6' },
+                    { label: 'NPOT Used', value: formatValue(npotUsed), color: '#f59e0b' },
+                    { label: 'NPOT Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#f59e0b' },
+                    { label: 'NMOT Used', value: formatValue(nmotUsed), color: '#8b5cf6' },
+                    { label: 'NMOT Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#8b5cf6' },
+                    { label: 'Signal Efficiency (e⁻)', value: (normData.signal_eff_eminus !== undefined && normData.signal_eff_eminus !== null) ? `${(normData.signal_eff_eminus * 100).toFixed(1)}%` : 'N/A', color: '#ef4444' },
+                    { label: 'Signal Efficiency (e⁺)', value: (normData.signal_eff_eplus !== undefined && normData.signal_eff_eplus !== null) ? `${(normData.signal_eff_eplus * 100).toFixed(1)}%` : 'N/A', color: '#06b6d4' }
                 ];
 
                 scalingParams.forEach((param, idx) => {
