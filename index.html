@@ -458,6 +458,27 @@
             }
         }
 
+        // Check if file exists (try multiple paths)
+        async function fileExists(filename) {
+            const pathsToTry = [
+                filename,                    // Current directory (anadash/)
+                '../' + filename             // Parent directory (pyCount/)
+            ];
+            
+            for (const path of pathsToTry) {
+                try {
+                    const response = await fetch(path, { method: 'HEAD' });
+                    if (response.ok) {
+                        console.log(`Found file at: ${path}`);
+                        return path;
+                    }
+                } catch (e) {
+                    console.log(`Path not found: ${path}`);
+                }
+            }
+            return null;
+        }
+
         // Load plots
         async function loadPlots() {
             const optimizationGallery = document.getElementById('optimization-gallery');
@@ -472,36 +493,44 @@
             ];
 
             // Load optimization plots
-            optimizationPlots.forEach(plot => {
-                const plotPath = plot;
-                const card = document.createElement('div');
-                card.className = 'plot-card';
-                card.innerHTML = `
-                    <img src="${plotPath}" alt="${plot}" onerror="this.parentElement.innerHTML='<div style=\'height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;\'>${plot}</div>'">
-                    <div class="plot-title">${plot}</div>
-                    <a href="${plotPath}" class="plot-link" download>↓ Download PNG</a>
-                `;
-                optimizationGallery.appendChild(card);
-            });
+            let optimizationCount = 0;
+            for (const plot of optimizationPlots) {
+                const filePath = await fileExists(plot);
+                if (filePath) {
+                    const card = document.createElement('div');
+                    card.className = 'plot-card';
+                    card.innerHTML = `
+                        <img src="${filePath}" alt="${plot}" style="width: 100%; height: 300px; object-fit: contain; background: #f0f0f0;">
+                        <div class="plot-title">${plot}</div>
+                        <a href="${filePath}" class="plot-link" download>↓ Download PNG</a>
+                    `;
+                    optimizationGallery.appendChild(card);
+                    optimizationCount++;
+                }
+            }
 
-            if (optimizationPlots.length === 0) {
+            if (optimizationCount === 0) {
                 optimizationGallery.innerHTML = '<div class="empty-message">No optimization plots found. Run analysis to generate plots.</div>';
             }
 
             // Load distribution plots
-            distributionPlots.forEach(plot => {
-                const plotPath = plot.name;
-                const card = document.createElement('div');
-                card.className = 'plot-card';
-                card.innerHTML = `
-                    <img src="${plotPath}" alt="${plot.name}" onerror="this.parentElement.innerHTML='<div style=\'height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;\'>${plot.name}</div>'">
-                    <div class="plot-title">${plot.title}</div>
-                    <a href="${plotPath}" class="plot-link" download>↓ Download PNG</a>
-                `;
-                distributionsGallery.appendChild(card);
-            });
+            let distributionCount = 0;
+            for (const plot of distributionPlots) {
+                const filePath = await fileExists(plot.name);
+                if (filePath) {
+                    const card = document.createElement('div');
+                    card.className = 'plot-card';
+                    card.innerHTML = `
+                        <img src="${filePath}" alt="${plot.name}" style="width: 100%; height: 300px; object-fit: contain; background: #f0f0f0;">
+                        <div class="plot-title">${plot.title}</div>
+                        <a href="${filePath}" class="plot-link" download>↓ Download PNG</a>
+                    `;
+                    distributionsGallery.appendChild(card);
+                    distributionCount++;
+                }
+            }
 
-            if (distributionPlots.length === 0) {
+            if (distributionCount === 0) {
                 distributionsGallery.innerHTML = '<div class="empty-message">No distribution plots found. Run analysis to generate plots.</div>';
             }
         }
