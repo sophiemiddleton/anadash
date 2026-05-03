@@ -247,13 +247,19 @@
                     This dashboard displays the latest analysis outputs from the pyCount directory.
                 </div>
                 <p style="margin-bottom: 15px; line-height: 1.6;">
-                    Welcome to the Mu2e Reference Analysis Dashboard. This page provides an interactive view of:
+                    The Mu2e experiment searches for charged-lepton flavor violating (CLFV) conversions of muons to electrons in the nuclear field. This process is forbidden in the Standard Model but predicted by many beyond-Standard-Model theories. The experiment aims to achieve unprecedented sensitivity to the muon-to-electron conversion process.
+                </p>
+                <p style="margin-bottom: 15px; line-height: 1.6;">
+                    <strong>Physics Background:</strong> The primary backgrounds to the signal are cosmic-ray-induced backgrounds, beam-related backgrounds (DIO - Decay In Orbit, RPC - Radiative Pion Capture) backgrounds. This analysis implements a comprehensive cut strategy to suppress these backgrounds while maintaining high signal efficiency for the Ce conversion signature.
+                </p>
+                <p style="margin-bottom: 15px; line-height: 1.6;">
+                    <strong>Analysis Purpose:</strong> This reference analysis optimizes event selection cuts to achieve the best signal sensitivity by tuning the trade-off between signal efficiency and background rejection. The dashboard displays:
                 </p>
                 <ul style="margin-left: 30px; margin-bottom: 20px; line-height: 1.8;">
-                    <li><strong>Sensitivity Results</strong>: Branching fraction limits and signal requirements</li>
-                    <li><strong>Cut Statistics</strong>: Detailed event counts and efficiency metrics from cut_stats.csv</li>
-                    <li><strong>Optimization Plots</strong>: Selection optimization plots (*_selection.pdf)</li>
-                    <li><strong>Distribution Plots</strong>: 1D and 2D analysis plots (momentum, time)</li>
+                    <li><strong>Sensitivity Results</strong>: Branching fraction upper limits and required signal for discovery significance</li>
+                    <li><strong>Cut Statistics</strong>: Event counts and efficiencies at each selection stage from cut_stats.csv</li>
+                    <li><strong>Optimization Plots</strong>: Selection optimization curves showing signal vs. background rejection (*_selection.png)</li>
+                    <li><strong>Distribution Plots</strong>: Reconstructed momentum and time distributions for signal and background processes</li>
                 </ul>
                 <p style="color: #666;">
                     Use the navigation buttons above to explore different sections of the analysis results.
@@ -458,11 +464,11 @@
             const distributionsGallery = document.getElementById('distributions-gallery');
 
             // Define expected plots
-            const optimizationPlots = ['CE_selection.pdf', 'DIO_selection.pdf', 'RPC_selection.pdf', 'RMCE_selection.pdf', 'OnSpill_selection.pdf'];
+            const optimizationPlots = ['CE_selection.png', 'DIO_selection.png', 'RPC_selection.png', 'RMCE_selection.png', 'OnSpill_selection.png'];
             const distributionPlots = [
-                { name: '1D_Mom.pdf', title: '1D Momentum Distribution' },
-                { name: '1D_Time.pdf', title: '1D Time Distribution' },
-                { name: '2D_Time.pdf', title: '2D Time Distribution' }
+                { name: '1D_Mom.png', title: '1D Momentum Distribution' },
+                { name: '1D_Time.png', title: '1D Time Distribution' },
+                { name: '2D_Time.png', title: '2D Time Distribution' }
             ];
 
             // Load optimization plots
@@ -471,11 +477,9 @@
                 const card = document.createElement('div');
                 card.className = 'plot-card';
                 card.innerHTML = `
-                    <div style="height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
-                        ${plot}
-                    </div>
+                    <img src="${plotPath}" alt="${plot}" onerror="this.parentElement.innerHTML='<div style=\'height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;\'>${plot}</div>'">
                     <div class="plot-title">${plot}</div>
-                    <a href="${plotPath}" class="plot-link" download>↓ Download PDF</a>
+                    <a href="${plotPath}" class="plot-link" download>↓ Download PNG</a>
                 `;
                 optimizationGallery.appendChild(card);
             });
@@ -490,11 +494,9 @@
                 const card = document.createElement('div');
                 card.className = 'plot-card';
                 card.innerHTML = `
-                    <div style="height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
-                        ${plot.name}
-                    </div>
+                    <img src="${plotPath}" alt="${plot.name}" onerror="this.parentElement.innerHTML='<div style=\'height: 300px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;\'>${plot.name}</div>'">
                     <div class="plot-title">${plot.title}</div>
-                    <a href="${plotPath}" class="plot-link" download>↓ Download PDF</a>
+                    <a href="${plotPath}" class="plot-link" download>↓ Download PNG</a>
                 `;
                 distributionsGallery.appendChild(card);
             });
