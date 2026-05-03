@@ -231,6 +231,7 @@
 
         <div class="nav">
             <button class="nav-btn active" data-section="overview">Overview</button>
+            <button class="nav-btn" data-section="sensitivity">Sensitivity Results</button>
             <button class="nav-btn" data-section="statistics">Cut Statistics</button>
             <button class="nav-btn" data-section="optimization">Optimization Plots</button>
             <button class="nav-btn" data-section="distributions">Distributions</button>
@@ -249,6 +250,7 @@
                     Welcome to the Mu2e Reference Analysis Dashboard. This page provides an interactive view of:
                 </p>
                 <ul style="margin-left: 30px; margin-bottom: 20px; line-height: 1.8;">
+                    <li><strong>Sensitivity Results</strong>: Branching fraction limits and signal requirements</li>
                     <li><strong>Cut Statistics</strong>: Detailed event counts and efficiency metrics from cut_stats.csv</li>
                     <li><strong>Optimization Plots</strong>: Selection optimization plots (*_selection.pdf)</li>
                     <li><strong>Distribution Plots</strong>: 1D and 2D analysis plots (momentum, time)</li>
@@ -256,6 +258,13 @@
                 <p style="color: #666;">
                     Use the navigation buttons above to explore different sections of the analysis results.
                 </p>
+            </div>
+
+            <!-- Sensitivity Results Section -->
+            <div class="section" id="sensitivity">
+                <h2>Sensitivity Results</h2>
+                <div id="sensitivity-status" class="status-box">Loading sensitivity results...</div>
+                <div id="sensitivity-container"></div>
             </div>
 
             <!-- Statistics Section -->
@@ -321,6 +330,75 @@
                 document.getElementById(section).classList.add('active');
             });
         });
+
+        // Load and display sensitivity results
+        async function loadSensitivityResults() {
+            try {
+                const response = await fetch('sensitivity_results.json');
+                if (!response.ok) {
+                    document.getElementById('sensitivity-status').innerHTML = 
+                        '<strong style="color: #f59e0b;">⚠ sensitivity_results.json not found</strong><br>Run analysis with count to generate sensitivity results.';
+                    document.getElementById('sensitivity-status').className = 'status-box warning';
+                    return;
+                }
+
+                const data = await response.json();
+
+                // Create formatted display
+                let html = '<div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">';
+                html += '<table style="width: 100%; margin-bottom: 20px;">';
+                html += '<thead><tr style="background: #667eea; color: white;"><th style="padding: 12px; text-align: left;">Parameter</th><th style="padding: 12px; text-align: right;">Value</th></tr></thead>';
+                html += '<tbody>';
+
+                const displayFields = [
+                    ['Background Count', 'background_count', ''],
+                    ['Exposure', 'exposure', ' effective stopped muons'],
+                    ['Signal Efficiency', 'efficiency', ''],
+                    ['Confidence Level', 'confidence_level', ''],
+                    ['', '', ''],
+                    ['Expected Upper Limit (numeric)', 's_up_numeric_events', ' events'],
+                    ['Expected Upper Limit (table)', 's_up_table_events', ' events'],
+                    ['BR Upper Limit (numeric)', 'br_upper_limit_numeric', ''],
+                    ['BR Upper Limit (table)', 'br_upper_limit_table', ''],
+                    ['', '', ''],
+                    ['FC Low BR', 'fc_low_br', ''],
+                    ['FC High BR', 'fc_high_br', ''],
+                    ['', '', ''],
+                    ['Required Signal (5σ)', 'required_signal_5sigma', ' events']
+                ];
+
+                displayFields.forEach(([label, key, unit]) => {
+                    if (!label) {
+                        html += '<tr style="height: 10px;"><td colspan="2"></td></tr>';
+                    } else {
+                        const value = data[key];
+                        const formattedValue = typeof value === 'number' 
+                            ? (value > 1e10 ? value.toExponential(2) : value.toFixed(6))
+                            : value;
+                        html += `<tr style="border-bottom: 1px solid #dee2e6;">
+                            <td style="padding: 12px; font-weight: 600; color: #333;">${label}</td>
+                            <td style="padding: 12px; text-align: right; color: #667eea; font-family: monospace;">${formattedValue}${unit}</td>
+                        </tr>`;
+                    }
+                });
+
+                html += '</tbody></table>';
+                html += `<p style="color: #666; font-size: 0.9em; font-style: italic;">${data.note}</p>`;
+                html += '</div>';
+
+                document.getElementById('sensitivity-container').innerHTML = html;
+                document.getElementById('sensitivity-status').innerHTML = 
+                    '<strong style="color: #22c55e;">✓ Sensitivity results loaded successfully</strong>';
+                document.getElementById('sensitivity-status').className = 'status-box success';
+
+            } catch (error) {
+                console.error('Error loading sensitivity results:', error);
+                document.getElementById('sensitivity-status').innerHTML = 
+                    `<strong style="color: #ef4444;">✗ Error loading sensitivity results</strong><br>${error.message}`;
+                document.getElementById('sensitivity-status').className = 'status-box';
+                document.getElementById('sensitivity-status').style.borderLeftColor = '#ef4444';
+            }
+        }
 
         // Load and parse CSV
         async function loadCutStats() {
@@ -430,6 +508,7 @@
         window.addEventListener('load', () => {
             const now = new Date();
             document.getElementById('timestamp').textContent = now.toLocaleString();
+            loadSensitivityResults();
             loadCutStats();
             loadPlots();
         });
