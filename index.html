@@ -79,7 +79,7 @@
         }
 
         .section {
-            display: block;
+            display: none;
         }
 
         .section.active {
@@ -314,24 +314,46 @@
                 </p>
             </div>
 
-            <!-- Electron (eminus) Analysis Results -->
-            <div class="section">
-                <h2 style="color: #2563eb; border-bottom: 3px solid #2563eb; padding-bottom: 10px;">Electron (μ⁻ → e⁻) Analysis Results</h2>
+            <!-- Sensitivity Results Section -->
+            <div class="section" id="sensitivity">
+                <h2>Sensitivity Results</h2>
                 
                 <div class="subsection">
-                    <h3>Sensitivity Results</h3>
+                    <h3 style="color: #2563eb;">Electron (μ⁻ → e⁻) Analysis</h3>
                     <div id="sensitivity-status-eminus" class="status-box">Loading sensitivity results...</div>
                     <div id="sensitivity-container-eminus"></div>
                 </div>
 
                 <div class="subsection">
-                    <h3>Cut Statistics</h3>
+                    <h3 style="color: #dc2626;">Positron (μ⁺ → e⁺) Analysis</h3>
+                    <div id="sensitivity-status-eplus" class="status-box">Loading sensitivity results...</div>
+                    <div id="sensitivity-container-eplus"></div>
+                </div>
+            </div>
+
+            <!-- Cut Statistics Section -->
+            <div class="section" id="statistics">
+                <h2>Cut Statistics</h2>
+                
+                <div class="subsection">
+                    <h3 style="color: #2563eb;">Electron (μ⁻ → e⁻) Analysis</h3>
                     <div id="table-status-eminus" class="status-box">Loading cut_stats.csv...</div>
                     <div class="table-container" id="table-container-eminus"></div>
                 </div>
 
                 <div class="subsection">
-                    <h3>Optimization Plots</h3>
+                    <h3 style="color: #dc2626;">Positron (μ⁺ → e⁺) Analysis</h3>
+                    <div id="table-status-eplus" class="status-box">Loading cut_stats.csv...</div>
+                    <div class="table-container" id="table-container-eplus"></div>
+                </div>
+            </div>
+
+            <!-- Optimization Plots Section -->
+            <div class="section" id="optimization">
+                <h2>Optimization Plots</h2>
+                
+                <div class="subsection">
+                    <h3 style="color: #2563eb;">Electron (μ⁻ → e⁻) Analysis</h3>
                     <p style="margin-bottom: 20px; color: #666;">
                         Selection optimization plots showing efficiency vs. background rejection for various cut criteria.
                     </p>
@@ -339,40 +361,28 @@
                 </div>
 
                 <div class="subsection">
-                    <h3>Distribution Plots</h3>
-                    <p style="margin-bottom: 20px; color: #666;">
-                        1D and 2D analysis plots from the pyCount run_count analysis.
-                    </p>
-                    <div class="plot-gallery" id="distributions-gallery-eminus"></div>
-                </div>
-            </div>
-
-            <!-- Positron (eplus) Analysis Results -->
-            <div class="section">
-                <h2 style="color: #dc2626; border-bottom: 3px solid #dc2626; padding-bottom: 10px;">Positron (μ⁺ → e⁺) Analysis Results</h2>
-                
-                <div class="subsection">
-                    <h3>Sensitivity Results</h3>
-                    <div id="sensitivity-status-eplus" class="status-box">Loading sensitivity results...</div>
-                    <div id="sensitivity-container-eplus"></div>
-                </div>
-
-                <div class="subsection">
-                    <h3>Cut Statistics</h3>
-                    <div id="table-status-eplus" class="status-box">Loading cut_stats.csv...</div>
-                    <div class="table-container" id="table-container-eplus"></div>
-                </div>
-
-                <div class="subsection">
-                    <h3>Optimization Plots</h3>
+                    <h3 style="color: #dc2626;">Positron (μ⁺ → e⁺) Analysis</h3>
                     <p style="margin-bottom: 20px; color: #666;">
                         Selection optimization plots showing efficiency vs. background rejection for various cut criteria.
                     </p>
                     <div class="plot-gallery" id="optimization-gallery-eplus"></div>
                 </div>
+            </div>
+
+            <!-- Distributions Section -->
+            <div class="section" id="distributions">
+                <h2>Distributions</h2>
+                
+                <div class="subsection">
+                    <h3 style="color: #2563eb;">Electron (μ⁻ → e⁻) Analysis</h3>
+                    <p style="margin-bottom: 20px; color: #666;">
+                        1D and 2D analysis plots from the pyCount run_count analysis.
+                    </p>
+                    <div class="plot-gallery" id="distributions-gallery-eminus"></div>
+                </div>
 
                 <div class="subsection">
-                    <h3>Distribution Plots</h3>
+                    <h3 style="color: #dc2626;">Positron (μ⁺ → e⁺) Analysis</h3>
                     <p style="margin-bottom: 20px; color: #666;">
                         1D and 2D analysis plots from the pyCount run_count analysis.
                     </p>
@@ -437,7 +447,10 @@
                 
                 // Update active section
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById(section).classList.add('active');
+                const targetSection = document.getElementById(section);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
             });
         });
 
@@ -454,10 +467,10 @@
             }
 
             try {
-                const response = await fetch('sensitivity_results.json');
+                const response = await fetch(`${prefix}_sensitivity_results.json`);
                 if (!response.ok) {
                     statusEl.innerHTML = 
-                        '<strong style="color: #f59e0b;">⚠ sensitivity_results.json not found</strong><br>Run analysis with count to generate sensitivity results.';
+                        `<strong style="color: #f59e0b;">⚠ ${prefix}_sensitivity_results.json not found</strong><br>Run analysis with count to generate sensitivity results.`;
                     statusEl.className = 'status-box warning';
                     return;
                 }
