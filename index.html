@@ -283,6 +283,7 @@
             <button class="nav-btn" data-section="statistics">Cut Statistics</button>
             <button class="nav-btn" data-section="optimization">Optimization Plots</button>
             <button class="nav-btn" data-section="distributions">Distributions</button>
+            <button class="nav-btn" data-section="normalization">Normalization</button>
             <button class="nav-btn" data-section="documentation">Documentation</button>
         </div>
 
@@ -428,6 +429,13 @@
                     <li><a href="https://github.com/Mu2e/Production" style="color: #667eea; text-decoration: none; font-weight: 600;" target="_blank">Mu2e Production Repository</a> - Main production configuration and workflow</li>
                     <li><a href="https://mu2e.fnal.gov/public/hep/data_catalogs/" style="color: #667eea; text-decoration: none; font-weight: 600;" target="_blank">Mu2e Data Catalog</a> - Browse available datasets</li>
                 </ul>
+            </div>
+
+            <!-- Normalization Section -->
+            <div class="section" id="normalization">
+                <h2>Normalization & Scaling Parameters</h2>
+                <div id="normalization-full-container" style="margin-bottom: 30px;"></div>
+                <div id="normalization-scaling-container"></div>
             </div>
         </div>
 
@@ -875,6 +883,109 @@
             }
         }
 
+        // Load and display normalization data
+        async function loadNormalization() {
+            try {
+                // Load normalization data
+                const normResponse = await fetch('normalization_ensembleMDS3c.json');
+                if (!normResponse.ok) {
+                    document.getElementById('normalization-full-container').innerHTML = 
+                        `<p style="color: #f59e0b; font-style: italic;">⚠ Normalization data not found.</p>`;
+                    return;
+                }
+                const normData = await normResponse.json();
+
+                // Load analysis config for file scaling
+                const configResponse = await fetch('analysis_config.json');
+                const configData = configResponse.ok ? await configResponse.json() : {};
+
+                // Create full sample normalization table
+                let fullHtml = '<h3 style="color: #667eea; margin-bottom: 15px;">📊 Full Sample Normalization</h3>';
+                fullHtml += '<table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">';
+                fullHtml += '<thead><tr style="background: #f0f0f0;">';
+                fullHtml += '<th style="padding: 12px; text-align: left; border-bottom: 2px solid #667eea; font-weight: 600;">Parameter</th>';
+                fullHtml += '<th style="padding: 12px; text-align: right; border-bottom: 2px solid #667eea; font-weight: 600;">Value</th>';
+                fullHtml += '</tr></thead><tbody>';
+
+                // Display key normalization parameters
+                const displayParams = [
+                    { key: 'njobs', label: 'Number of Jobs' },
+                    { key: 'beam_npot', label: 'Beam NPOT', format: '3.2e' },
+                    { key: 'beam_nmot', label: 'Beam NMOT', format: '3.2e' },
+                    { key: 'beam_livetime', label: 'Beam Livetime (s)', format: '.2e' },
+                    { key: 'beam_onspill_time', label: 'On-Spill Time (s)', format: '.2e' },
+                    { key: 'dio_events', label: 'DIO Expected Events', format: '.2e' },
+                    { key: 'ipa_events', label: 'IPA Expected Events', format: '.2e' },
+                    { key: 'rpc_internal_events', label: 'RPC Internal Expected Events', format: '.2e' },
+                    { key: 'rpc_external_events', label: 'RPC External Expected Events', format: '.2e' },
+                    { key: 'rmc_internal_events', label: 'RMC Internal Expected Events', format: '.2e' },
+                    { key: 'rmc_external_events', label: 'RMC External Expected Events', format: '.2e' }
+                ];
+
+                displayParams.forEach((param, idx) => {
+                    if (normData[param.key] !== undefined) {
+                        let value = normData[param.key];
+                        if (param.format && typeof value === 'number') {
+                            if (param.format === '3.2e') {
+                                value = value.toExponential(2);
+                            } else if (param.format === '.2e') {
+                                value = value.toExponential(2);
+                            }
+                        }
+                        fullHtml += `<tr style="border-bottom: 1px solid #e5e7eb; ${idx % 2 === 0 ? 'background: #fafbfc;' : ''}">
+                            <td style="padding: 12px; font-weight: 500;">${param.label}</td>
+                            <td style="padding: 12px; text-align: right; font-family: 'Courier New', monospace; color: #333;">${value}</td>
+                        </tr>`;
+                    }
+                });
+
+                fullHtml += '</tbody></table>';
+                document.getElementById('normalization-full-container').innerHTML = fullHtml;
+
+                // Create scaling factors table
+                let scalingHtml = '<h3 style="color: #667eea; margin-bottom: 15px;">⚖️ This Run: Scaling Factors & Efficiencies</h3>';
+                scalingHtml += '<table style="width: 100%; border-collapse: collapse;">';
+                scalingHtml += '<thead><tr style="background: #f0f0f0;">';
+                scalingHtml += '<th style="padding: 12px; text-align: left; border-bottom: 2px solid #667eea; font-weight: 600;">Parameter</th>';
+                scalingHtml += '<th style="padding: 12px; text-align: right; border-bottom: 2px solid #667eea; font-weight: 600;">Value</th>';
+                scalingHtml += '</tr></thead><tbody>';
+
+                // Calculate scaling factors
+                const filesFrac = normData.files_fraction || (normData.nfiles_used / normData.nfiles_total);
+                const npotUsed = normData.beam_npot * filesFrac;
+                const nmotUsed = normData.beam_nmot * filesFrac;
+
+                const scalingParams = [
+                    { label: 'Files Used / Total', value: `${normData.nfiles_used} / ${normData.nfiles_total}`, color: '#3b82f6' },
+                    { label: 'File Fraction', value: filesFrac.toExponential(4), color: '#3b82f6' },
+                    { label: 'NPOT Used', value: npotUsed.toExponential(2), color: '#f59e0b' },
+                    { label: 'NPOT Fraction', value: filesFrac.toExponential(4), color: '#f59e0b' },
+                    { label: 'NMOT Used', value: nmotUsed.toExponential(2), color: '#8b5cf6' },
+                    { label: 'NMOT Fraction', value: filesFrac.toExponential(4), color: '#8b5cf6' },
+                    { label: 'Signal Efficiency (e⁻)', value: `${(normData.signal_eff_eminus * 100).toFixed(1)}%`, color: '#ef4444' },
+                    { label: 'Signal Efficiency (e⁺)', value: `${(normData.signal_eff_eplus * 100).toFixed(1)}%`, color: '#06b6d4' }
+                ];
+
+                scalingParams.forEach((param, idx) => {
+                    scalingHtml += `<tr style="border-bottom: 1px solid #e5e7eb; ${idx % 2 === 0 ? 'background: #fafbfc;' : ''}">
+                        <td style="padding: 12px; font-weight: 500; color: ${param.color};">● ${param.label}</td>
+                        <td style="padding: 12px; text-align: right; font-family: 'Courier New', monospace; color: #333;">${param.value}</td>
+                    </tr>`;
+                });
+
+                scalingHtml += '</tbody></table>';
+                scalingHtml += '<div style="margin-top: 15px; padding: 12px; background: #fffbea; border-left: 4px solid #f59e0b; border-radius: 4px; color: #666; font-size: 0.95em;">';
+                scalingHtml += '<strong>ℹ️ Note:</strong> Exposure scaling factor = file_fraction × signal_efficiency. This is applied to expected background event counts to scale them to the actual analysis sample size.';
+                scalingHtml += '</div>';
+                document.getElementById('normalization-scaling-container').innerHTML = scalingHtml;
+
+            } catch (error) {
+                console.error('Error loading normalization:', error);
+                document.getElementById('normalization-full-container').innerHTML = 
+                    `<p style="color: #ef4444;">✗ Error loading normalization data: ${error.message}</p>`;
+            }
+        }
+
         // Initialize on load
         window.addEventListener('load', () => {
             const now = new Date();
@@ -889,6 +1000,7 @@
             loadYields('eplus');
             loadPlots('eminus');
             loadPlots('eplus');
+            loadNormalization();
         });
     </script>
 </body>
