@@ -333,17 +333,39 @@
             <!-- Documentation Section -->
             <div class="section" id="documentation">
                 <h2>Documentation</h2>
-                <p style="margin-bottom: 20px; line-height: 1.8;">
-                    For detailed analysis information and workflow documentation, see:
+                
+                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">🔬 Creating a New Sample</h3>
+                <p style="margin-bottom: 15px; line-height: 1.8;">
+                    To create a new Mu2e ensemble sample for analysis, configure the job using the Mu2e Production JobConfig system:
                 </p>
+                <p style="margin-left: 20px; padding: 15px; background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 4px; margin-bottom: 20px;">
+                    📁 <a href="https://github.com/Mu2e/Production/tree/main/JobConfig/ensemble" style="color: #667eea; text-decoration: none; font-weight: 600;" target="_blank">Mu2e Production JobConfig/ensemble</a>
+                    <br><span style="color: #666; font-size: 0.95em;">Browse existing ensemble configurations and add your sample to the production pipeline</span>
+                </p>
+
+                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">⚙️ Running the Automated Analysis</h3>
+                <p style="margin-bottom: 15px; line-height: 1.8;">
+                    Once your sample is available in the Mu2e Data Catalog, run the automated analysis pipeline on the Elastic Analysis Facility (EAF):
+                </p>
+                <p style="margin-left: 20px; padding: 15px; background: #f5f5f5; border-left: 4px solid #764ba2; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 0.9em; word-break: break-all; margin-bottom: 20px;">
+                    <strong style="color: #764ba2;">Command:</strong><br>
+                    ./run_analysis.sh --defname nts.mu2e.ensembleMDS3c.MDC2025-001.root --location "disk" --jobs 8
+                </p>
+                <p style="margin-left: 20px; margin-bottom: 15px; line-height: 1.8; color: #555;">
+                    <strong>Parameters:</strong><br>
+                    • <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">--defname</code> - Dataset name from Mu2e Data Catalog<br>
+                    • <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">--location</code> - Data location: "disk", "tape", "scratch", or "nersc"<br>
+                    • <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">--jobs</code> - Number of parallel processing jobs
+                </p>
+                <p style="margin-left: 20px; padding: 10px; background: #fffbea; border-left: 4px solid #f59e0b; border-radius: 4px; margin-bottom: 20px; color: #666;">
+                    💡 <strong>Tip:</strong> Analysis results will be automatically displayed in this dashboard once processing completes.
+                </p>
+
+                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">📚 Additional Resources</h3>
                 <ul style="margin-left: 30px; margin-bottom: 20px; line-height: 1.8;">
-                    <li><a href="ANALYSIS_DASHBOARD.md" style="color: #667eea; text-decoration: none; font-weight: 600;">ANALYSIS_DASHBOARD.md</a> - Analysis overview and documentation</li>
-                    <li><a href="../AUTOMATION.md" style="color: #667eea; text-decoration: none; font-weight: 600;">AUTOMATION.md</a> - Automation workflow details</li>
-                    <li><a href="../QUICKSTART.md" style="color: #667eea; text-decoration: none; font-weight: 600;">QUICKSTART.md</a> - Quick reference guide</li>
+                    <li><a href="https://github.com/Mu2e/Production" style="color: #667eea; text-decoration: none; font-weight: 600;" target="_blank">Mu2e Production Repository</a> - Main production configuration and workflow</li>
+                    <li><a href="https://mu2e.fnal.gov/public/hep/data_catalogs/" style="color: #667eea; text-decoration: none; font-weight: 600;" target="_blank">Mu2e Data Catalog</a> - Browse available datasets</li>
                 </ul>
-                <p style="color: #666;">
-                    View the source files in the parent pyCount directory or browse the anadash repository on GitHub.
-                </p>
             </div>
         </div>
 
