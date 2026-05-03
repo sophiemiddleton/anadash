@@ -441,16 +441,16 @@
         // Load and parse CSV
         async function loadCutStats() {
             // Load cut descriptions from metadata file
-            let cutDescriptions = {};
+            let cutMetadata = {};
             try {
                 const metadataResponse = await fetch('cut_metadata.json');
                 if (metadataResponse.ok) {
                     const metadata = await metadataResponse.json();
-                    // Build description lookup from metadata
+                    // Build metadata lookup from file
                     Object.entries(metadata.cuts).forEach(([key, cutData]) => {
-                        cutDescriptions[key] = cutData.description;
+                        cutMetadata[key] = cutData;
                     });
-                    console.log('Loaded cut descriptions from cut_metadata.json');
+                    console.log('Loaded cut metadata from cut_metadata.json');
                 } else {
                     console.log('cut_metadata.json not found, using fallback descriptions');
                 }
@@ -460,35 +460,35 @@
 
             // Fallback descriptions if metadata file not available
             const fallbackDescriptions = {
-                'is_reco_electron': 'Tracks are assumed to be electrons based on tracking algorithm classification',
-                'one_reco_electron': 'Exactly one reconstructed electron per event',
-                'is_reco_positron': 'Tracks are assumed to be positrons based on tracking algorithm classification',
-                'has_downstream': 'Downstream tracks with forward momentum (p_z > 0) through tracker',
-                'mc_is_electron': 'MC truth: electron particle (pdg == 11)',
-                'has_trk_front': 'Track has at least one segment intersecting TT_Front surface',
-                'good_trkpid': 'Track PID > 0.638 - strong particle identification criterion',
-                'good_trkqual': 'Track quality > 0.2 - measure of tracking algorithm confidence',
-                'within_t0': 't0 at tracker mid (500 < t_0 < 1650 ns) - time window selection',
-                'within_t0err': 't0 error < 0.9 ns - time measurement precision requirement',
-                'has_hits': 'Minimum of 20 active hits in tracker - requires sufficient track information',
-                'within_lhr_maxl': 'Loop helix maximum radius constraint (450 < R_max < 680 mm) - track geometry cut',
-                'within_d0': 'Distance of closest approach d_0 < 100 mm - impact parameter requirement',
-                'within_pitch_angle': 'Extrapolated pitch angle 0.5577 < tan(θ_Dip) < 1.0 - momentum direction cut',
-                'has_st': 'Track has N_ST > 0 - intersects Stopping Target',
-                'no_opa': 'Track avoids OPA (N_OPA == 0) - rejects tracks through outer proton absorber',
-                'no_crv_veto': 'No high-quality CRV coincidence (PEs>25, nHits≥15, span<175ns)',
-                'crv_quality': 'No CRV coincidence with start>429 and end<1700 ns within dt threshold',
-                'no_crv_timewindow': 'No CRV-track time veto: |Δt| ≥ 150 ns - cosmic ray rejection',
-                'pz_pt': 'Track-level cut: 0.5 < p_z/p_t < 1.0 (forward going momentum)',
-                'triggers': 'Event triggered required tracks (trigger passed)',
-                'within_mom_time': '95 < momentum < 115 MeV/c - narrow momentum window for signal region',
-                'within_mom_time_pos': 't0 at tracker mid (0 < t_0 < 700 ns) - early time window for positrons',
-                'early_time': 'Veto tracks with reflections - no loop helix fit requirement',
-                'reflected': 'Test cut - configuration dependent'
+                'is_reco_electron': { description: 'Tracks are assumed to be electrons based on tracking algorithm classification', physics: 'Selects electron-like tracks from the tracker quality information' },
+                'one_reco_electron': { description: 'Exactly one reconstructed electron per event', physics: 'Event-level cut to ensure single-particle signature, reduces backgrounds from multi-track events' },
+                'is_reco_positron': { description: 'Tracks are assumed to be positrons based on tracking algorithm classification', physics: 'Selects positron-like tracks (opposite charge from electrons)' },
+                'has_downstream': { description: 'Downstream tracks with forward momentum (p_z > 0) through tracker', physics: 'Requires tracks to pass through downstream tracker detector, rejects upstream-only tracks' },
+                'mc_is_electron': { description: 'MC truth: electron particle (pdg == 11)', physics: 'Simulation-only cut for validation, ensures we\'re looking at true electron tracks' },
+                'has_trk_front': { description: 'Track has at least one segment intersecting TT_Front surface', physics: 'Requires track segment at front of tracker to ensure well-measured momentum' },
+                'good_trkpid': { description: 'Track PID > 0.638 - strong particle identification criterion', physics: 'Particle ID selection to separate electrons from other particles, threshold optimized for signal efficiency' },
+                'good_trkqual': { description: 'Track quality > 0.2 - measure of tracking algorithm confidence', physics: 'Quality of fit metric from tracking algorithm, removes poorly reconstructed tracks' },
+                'within_t0': { description: 't0 at tracker mid (500 < t_0 < 1650 ns) - time window selection', physics: 'Timing gate at tracker middle, selects events within expected beam timing window' },
+                'within_t0err': { description: 't0 error < 0.9 ns - time measurement precision requirement', physics: 'Requires precise time measurement, removes events with poorly determined timing' },
+                'has_hits': { description: 'Minimum of 20 active hits in tracker - requires sufficient track information', physics: 'Minimum number of tracker hits ensures good track reconstruction quality' },
+                'within_lhr_maxl': { description: 'Loop helix maximum radius constraint (450 < R_max < 680 mm) - track geometry cut', physics: 'Curvature constraint on track fit, selects expected track radius for signal momentum range' },
+                'within_d0': { description: 'Distance of closest approach d_0 < 100 mm - impact parameter requirement', physics: 'Impact parameter cut, constrains track to originate from interaction vertex region' },
+                'within_pitch_angle': { description: 'Extrapolated pitch angle 0.5577 < tan(θ_Dip) < 1.0 - momentum direction cut', physics: 'Pitch angle selection ensures track has expected angular distribution for signal' },
+                'has_st': { description: 'Track has N_ST > 0 - intersects Stopping Target', physics: 'Track must pass through Stopping Target where muon originated' },
+                'no_opa': { description: 'Track avoids OPA (N_OPA == 0) - rejects tracks through outer proton absorber', physics: 'Removes tracks that pass through outer proton absorber, indicates non-signal background' },
+                'no_crv_veto': { description: 'No high-quality CRV coincidence (PEs>25, nHits≥15, span<175ns)', physics: 'Cosmic ray veto using Cosmic Ray Tracker, rejects events with cosmic hits' },
+                'crv_quality': { description: 'No CRV coincidence with start>429 and end<1700 ns within dt threshold', physics: 'CRV timing consistency check, removes poorly reconstructed cosmic hits' },
+                'no_crv_timewindow': { description: 'No CRV-track time veto: |Δt| ≥ 150 ns - cosmic ray rejection', physics: 'Requires minimum time separation between track and CRV hit, cosmic ray rejection' },
+                'pz_pt': { description: 'Track-level cut: 0.5 < p_z/p_t < 1.0 (forward going momentum)', physics: 'Momentum direction cut ensuring track is mostly forward-going, rejects wide-angle scatters' },
+                'triggers': { description: 'Event trigger requirement passed (trigger passed)', physics: 'Hardware/software trigger selection, ensures event came from expected trigger path' },
+                'within_mom_time': { description: '95 < momentum < 115 MeV/c - narrow momentum window for signal region', physics: 'Tight momentum window around expected signal value (104.8 MeV/c for mu→e), signal optimization' },
+                'within_mom_time_pos': { description: 't0 at tracker mid (0 < t_0 < 700 ns) - early time window for positrons', physics: 'Early timing window for positron signal search, different from electron window' },
+                'early_time': { description: 'Veto tracks with reflections - no loop helix fit requirement', physics: 'Removes tracks with loop-like topology indicating multiple scattering or background' },
+                'reflected': { description: 'Test cut - configuration dependent', physics: 'Placeholder or test cut, behavior depends on analysis configuration' }
             };
 
-            // Use loaded descriptions, fall back to hardcoded if not found
-            const finalDescriptions = { ...fallbackDescriptions, ...cutDescriptions };
+            // Use loaded metadata, fall back to hardcoded if not found
+            const finalMetadata = { ...fallbackDescriptions, ...cutMetadata };
 
             try {
                 const response = await fetch('cut_stats.csv');
@@ -518,7 +518,7 @@
 
                 rows.forEach((row, rowIndex) => {
                     const cutName = row[0];
-                    const description = finalDescriptions[cutName] || 'No description available';
+                    const metadata = finalMetadata[cutName] || { description: 'No description available', physics: '' };
                     
                     // Main row with expand button
                     html += '<tr class="cut-row" data-cut="' + cutName + '">';
@@ -529,11 +529,15 @@
                     html += '</tr>';
                     
                     // Details row (hidden by default)
+                    let detailsHtml = `<strong>📋 Description:</strong><br>${metadata.description}`;
+                    if (metadata.physics) {
+                        detailsHtml += `<br><br><strong>🔬 Physics Rationale:</strong><br>${metadata.physics}`;
+                    }
+                    
                     html += `<tr class="details-row" id="details-${cutName}">
                         <td colspan="${headers.length}">
                             <div class="cut-details">
-                                <strong>📋 Cut Description:</strong><br>
-                                ${description}
+                                ${detailsHtml}
                             </div>
                         </td>
                     </tr>`;
