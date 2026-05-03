@@ -467,10 +467,10 @@
             }
 
             try {
-                const response = await fetch(`${prefix}_sensitivity_results.json`);
+                const response = await fetch(`${prefix}_sensitivity_result.json`);
                 if (!response.ok) {
                     statusEl.innerHTML = 
-                        `<strong style="color: #f59e0b;">⚠ ${prefix}_sensitivity_results.json not found</strong><br>Run analysis with count to generate sensitivity results.`;
+                        `<strong style="color: #f59e0b;">⚠ ${prefix}_sensitivity_result.json not found</strong><br>Run analysis with count to generate sensitivity results.`;
                     statusEl.className = 'status-box warning';
                     return;
                 }
