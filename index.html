@@ -952,12 +952,26 @@
                 scalingHtml += '</tr></thead><tbody>';
 
                 // Calculate scaling factors
-                console.log('Before scaling calc - beam_npot:', normData.beam_npot, 'files_fraction:', normData.files_fraction);
-                const filesFrac = normData.files_fraction !== undefined ? normData.files_fraction : (normData.nfiles_used / normData.nfiles_total);
+                console.log('Config data:', configData);
+                const nfiles_used = configData.nfiles_used !== undefined ? configData.nfiles_used : normData.nfiles_used;
+                const nfiles_total = configData.nfiles_total !== undefined ? configData.nfiles_total : normData.nfiles_total;
+                const filesFrac = nfiles_used / nfiles_total;
                 const npotUsed = normData.beam_npot * filesFrac;
                 const nmotUsed = normData.beam_nmot * filesFrac;
-                console.log('After scaling calc - filesFrac:', filesFrac, 'npotUsed:', npotUsed, 'nmotUsed:', nmotUsed);
+                console.log('Using from config - nfiles_used:', nfiles_used, 'nfiles_total:', nfiles_total, 'filesFrac:', filesFrac);
+                console.log('After scaling calc - npotUsed:', npotUsed, 'nmotUsed:', nmotUsed);
                 console.log('signal_eff_eminus:', normData.signal_eff_eminus, 'signal_eff_eplus:', normData.signal_eff_eplus);
+
+                const scalingParams = [
+                    { label: 'Files Used / Total', value: `${nfiles_used} / ${nfiles_total}`, color: '#3b82f6' },
+                    { label: 'File Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#3b82f6' },
+                    { label: 'NPOT Used', value: npotUsed ? npotUsed.toExponential(2) : 'N/A', color: '#f59e0b' },
+                    { label: 'NPOT Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#f59e0b' },
+                    { label: 'NMOT Used', value: nmotUsed ? nmotUsed.toExponential(2) : 'N/A', color: '#8b5cf6' },
+                    { label: 'NMOT Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#8b5cf6' },
+                    { label: 'Signal Efficiency (e⁻)', value: normData.signal_eff_eminus ? `${(normData.signal_eff_eminus * 100).toFixed(1)}%` : 'N/A', color: '#ef4444' },
+                    { label: 'Signal Efficiency (e⁺)', value: normData.signal_eff_eplus ? `${(normData.signal_eff_eplus * 100).toFixed(1)}%` : 'N/A', color: '#06b6d4' }
+                ];
 
                 const formatValue = (val) => {
                     if (val === undefined || val === null || Number.isNaN(val)) return 'N/A';
