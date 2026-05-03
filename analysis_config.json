@@ -1,0 +1,8 @@
+{
+  "dataset_name": "nts.mu2e.ensembleMDS3c.MDC2025-001.root",
+  "location": "disk",
+  "nfiles_total": 496,
+  "nfiles_used": 1,
+  "jobs": 8,
+  "timestamp": "2026-05-03T19:45:45.899113"
+}

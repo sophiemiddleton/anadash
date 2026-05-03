@@ -339,12 +339,14 @@
                     <h3 style="color: #2563eb;">Electron (μ⁻ → e⁻) Analysis</h3>
                     <div id="table-status-eminus" class="status-box">Loading cut_stats.csv...</div>
                     <div class="table-container" id="table-container-eminus"></div>
+                    <div id="yields-container-eminus" style="margin-top: 30px; padding: 20px; background: #fafbfc; border-radius: 8px; border-left: 4px solid #2563eb;"></div>
                 </div>
 
                 <div class="subsection">
                     <h3 style="color: #dc2626;">Positron (μ⁺ → e⁺) Analysis</h3>
                     <div id="table-status-eplus" class="status-box">Loading cut_stats.csv...</div>
                     <div class="table-container" id="table-container-eplus"></div>
+                    <div id="yields-container-eplus" style="margin-top: 30px; padding: 20px; background: #fafbfc; border-radius: 8px; border-left: 4px solid #dc2626;"></div>
                 </div>
             </div>
 
@@ -775,6 +777,90 @@
                 console.log(`${prefix} - Optimization gallery has ${optimizationGallery.children.length} plots`);
                 console.log(`${prefix} - Distribution gallery has ${distributionsGallery.children.length} plots`);
             }, 2000);
+        // Load yields data
+        async function loadYields(prefix) {
+            const containerId = `yields-container-${prefix}`;
+            const containerEl = document.getElementById(containerId);
+
+            if (!containerEl) {
+                console.log(`Yields container not found for prefix: ${prefix}`);
+                return;
+            }
+
+            try {
+                const filename = `${prefix}_yields.json`;
+                const response = await fetch(filename);
+                
+                if (!response.ok) {
+                    containerEl.innerHTML = `<p style="color: #f59e0b; font-style: italic;">⚠ ${filename} not found. Run analysis to generate yields data.</p>`;
+                    return;
+                }
+
+                const yields = await response.json();
+
+                // Create formatted display
+                let html = '<h4 style="color: #667eea; margin-bottom: 15px; margin-top: 0;">📊 MC Truth Yields</h4>';
+                html += '<table style="width: 100%; border-collapse: collapse;">';
+                html += '<thead><tr style="background: #f0f0f0;"><th style="padding: 10px; text-align: left; border-bottom: 2px solid #667eea;">Channel</th><th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">Events</th><th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">Post-Selection</th></tr></thead>';
+                html += '<tbody>';
+
+                const channels = [
+                    { key: 'dio', label: 'DIO', color: '#3b82f6' },
+                    { key: 'cep', label: 'CEP (Signal)', color: '#ef4444' },
+                    { key: 'cem', label: 'CEM', color: '#f59e0b' },
+                    { key: 'ipa', label: 'IPA DIO', color: '#8b5cf6' },
+                    { key: 'erpc', label: 'eRPC', color: '#14b8a6' },
+                    { key: 'irpc', label: 'iRPC', color: '#06b6d4' },
+                    { key: 'ermc', label: 'eRMC', color: '#ec4899' },
+                    { key: 'irmc', label: 'iRMC', color: '#f97316' },
+                    { key: 'flateminus', label: 'FlateMinus', color: '#6366f1' },
+                    { key: 'flateplus', label: 'FlatePlus', color: '#a855f7' },
+                    { key: 'cosmic', label: 'Cosmic', color: '#71717a' },
+                    { key: 'others', label: 'Others', color: '#a1a1aa' }
+                ];
+
+                channels.forEach(channel => {
+                    const value = yields[channel.key] || 0;
+                    html += `<tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 10px; font-weight: 500; color: ${channel.color};">● ${channel.label}</td>
+                        <td style="padding: 10px; text-align: right; color: #333;">${value}</td>
+                        <td style="padding: 10px; text-align: right; color: #666; font-size: 0.9em;">–</td>
+                    </tr>`;
+                });
+
+                html += '</tbody></table>';
+
+                // Add reconstructed and signal region counts
+                html += '<div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">';
+                html += '<h4 style="color: #667eea; margin-bottom: 10px; margin-top: 0;">📈 Selection Results</h4>';
+                html += '<table style="width: 100%; border-collapse: collapse;">';
+                html += '<tbody>';
+                
+                const selectionChannels = [
+                    { key: 'signal_reco', label: 'Reconstructed Signal', color: '#ef4444' },
+                    { key: 'background_reco', label: 'Reconstructed Background', color: '#3b82f6' },
+                    { key: 'signal_sr', label: 'Signal Region Signal', color: '#dc2626' },
+                    { key: 'background_sr', label: 'Signal Region Background', color: '#1d4ed8' }
+                ];
+
+                selectionChannels.forEach(channel => {
+                    const value = yields[channel.key] !== undefined ? yields[channel.key] : 'N/A';
+                    const displayValue = typeof value === 'number' ? value.toFixed(1) : value;
+                    html += `<tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 10px; font-weight: 500; color: ${channel.color};">● ${channel.label}</td>
+                        <td style="padding: 10px; text-align: right; color: #333;">${displayValue}</td>
+                    </tr>`;
+                });
+
+                html += '</tbody></table>';
+                html += '</div>';
+
+                containerEl.innerHTML = html;
+
+            } catch (error) {
+                console.error(`Error loading yields for ${prefix}:`, error);
+                containerEl.innerHTML = `<p style="color: #ef4444;">✗ Error loading yields: ${error.message}</p>`;
+            }
         }
 
         // Initialize on load
@@ -787,6 +873,8 @@
             loadSensitivityResults('eplus');
             loadCutStats('eminus');
             loadCutStats('eplus');
+            loadYields('eminus');
+            loadYields('eplus');
             loadPlots('eminus');
             loadPlots('eplus');
         });

@@ -1,0 +1,18 @@
+{
+  "dio": 193,
+  "ipa": 2,
+  "cem": 0,
+  "cep": 0,
+  "erpc": 2,
+  "irpc": 1,
+  "ermc": 167,
+  "irmc": 29,
+  "flateminus": 0,
+  "flateplus": 0,
+  "cosmic": 13,
+  "others": 407,
+  "signal_reco": 1.0,
+  "background_reco": 407.0,
+  "signal_sr": 0.0,
+  "background_sr": 1.0
+}
