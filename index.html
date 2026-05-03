@@ -79,7 +79,7 @@
         }
 
         .section {
-            display: none;
+            display: block;
         }
 
         .section.active {
@@ -90,8 +90,24 @@
             color: #667eea;
             margin-bottom: 20px;
             font-size: 1.8em;
-            border-bottom: 2px solid #667eea;
             padding-bottom: 10px;
+        }
+
+        .subsection {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #fafbfc;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .subsection h3 {
+            color: #555;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
         }
 
         .table-container {
@@ -298,36 +314,70 @@
                 </p>
             </div>
 
-            <!-- Sensitivity Results Section -->
-            <div class="section" id="sensitivity">
-                <h2>Sensitivity Results</h2>
-                <div id="sensitivity-status" class="status-box">Loading sensitivity results...</div>
-                <div id="sensitivity-container"></div>
+            <!-- Electron (eminus) Analysis Results -->
+            <div class="section">
+                <h2 style="color: #2563eb; border-bottom: 3px solid #2563eb; padding-bottom: 10px;">Electron (μ⁻ → e⁻) Analysis Results</h2>
+                
+                <div class="subsection">
+                    <h3>Sensitivity Results</h3>
+                    <div id="sensitivity-status-eminus" class="status-box">Loading sensitivity results...</div>
+                    <div id="sensitivity-container-eminus"></div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Cut Statistics</h3>
+                    <div id="table-status-eminus" class="status-box">Loading cut_stats.csv...</div>
+                    <div class="table-container" id="table-container-eminus"></div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Optimization Plots</h3>
+                    <p style="margin-bottom: 20px; color: #666;">
+                        Selection optimization plots showing efficiency vs. background rejection for various cut criteria.
+                    </p>
+                    <div class="plot-gallery" id="optimization-gallery-eminus"></div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Distribution Plots</h3>
+                    <p style="margin-bottom: 20px; color: #666;">
+                        1D and 2D analysis plots from the pyCount run_count analysis.
+                    </p>
+                    <div class="plot-gallery" id="distributions-gallery-eminus"></div>
+                </div>
             </div>
 
-            <!-- Statistics Section -->
-            <div class="section" id="statistics">
-                <h2>Cut Statistics</h2>
-                <div id="table-status" class="status-box">Loading cut_stats.csv...</div>
-                <div class="table-container" id="table-container"></div>
-            </div>
+            <!-- Positron (eplus) Analysis Results -->
+            <div class="section">
+                <h2 style="color: #dc2626; border-bottom: 3px solid #dc2626; padding-bottom: 10px;">Positron (μ⁺ → e⁺) Analysis Results</h2>
+                
+                <div class="subsection">
+                    <h3>Sensitivity Results</h3>
+                    <div id="sensitivity-status-eplus" class="status-box">Loading sensitivity results...</div>
+                    <div id="sensitivity-container-eplus"></div>
+                </div>
 
-            <!-- Optimization Plots Section -->
-            <div class="section" id="optimization">
-                <h2>Optimization Plots</h2>
-                <p style="margin-bottom: 20px; color: #666;">
-                    Selection optimization plots showing efficiency vs. background rejection for various cut criteria.
-                </p>
-                <div class="plot-gallery" id="optimization-gallery"></div>
-            </div>
+                <div class="subsection">
+                    <h3>Cut Statistics</h3>
+                    <div id="table-status-eplus" class="status-box">Loading cut_stats.csv...</div>
+                    <div class="table-container" id="table-container-eplus"></div>
+                </div>
 
-            <!-- Distributions Section -->
-            <div class="section" id="distributions">
-                <h2>Distribution Plots</h2>
-                <p style="margin-bottom: 20px; color: #666;">
-                    1D and 2D analysis plots from the pyCount run_count analysis.
-                </p>
-                <div class="plot-gallery" id="distributions-gallery"></div>
+                <div class="subsection">
+                    <h3>Optimization Plots</h3>
+                    <p style="margin-bottom: 20px; color: #666;">
+                        Selection optimization plots showing efficiency vs. background rejection for various cut criteria.
+                    </p>
+                    <div class="plot-gallery" id="optimization-gallery-eplus"></div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Distribution Plots</h3>
+                    <p style="margin-bottom: 20px; color: #666;">
+                        1D and 2D analysis plots from the pyCount run_count analysis.
+                    </p>
+                    <div class="plot-gallery" id="distributions-gallery-eplus"></div>
+                </div>
             </div>
 
             <!-- Documentation Section -->
@@ -391,14 +441,24 @@
             });
         });
 
-        // Load and display sensitivity results
-        async function loadSensitivityResults() {
+        // Load and display sensitivity results for eminus or eplus
+        async function loadSensitivityResults(prefix) {
+            const statusId = `sensitivity-status-${prefix}`;
+            const containerId = `sensitivity-container-${prefix}`;
+            const statusEl = document.getElementById(statusId);
+            const containerEl = document.getElementById(containerId);
+
+            if (!statusEl || !containerEl) {
+                console.log(`Elements not found for prefix: ${prefix}`);
+                return;
+            }
+
             try {
                 const response = await fetch('sensitivity_results.json');
                 if (!response.ok) {
-                    document.getElementById('sensitivity-status').innerHTML = 
+                    statusEl.innerHTML = 
                         '<strong style="color: #f59e0b;">⚠ sensitivity_results.json not found</strong><br>Run analysis with count to generate sensitivity results.';
-                    document.getElementById('sensitivity-status').className = 'status-box warning';
+                    statusEl.className = 'status-box warning';
                     return;
                 }
 
@@ -446,22 +506,32 @@
                 html += `<p style="color: #666; font-size: 0.9em; font-style: italic;">${data.note}</p>`;
                 html += '</div>';
 
-                document.getElementById('sensitivity-container').innerHTML = html;
-                document.getElementById('sensitivity-status').innerHTML = 
+                containerEl.innerHTML = html;
+                statusEl.innerHTML = 
                     '<strong style="color: #22c55e;">✓ Sensitivity results loaded successfully</strong>';
-                document.getElementById('sensitivity-status').className = 'status-box success';
+                statusEl.className = 'status-box success';
 
             } catch (error) {
-                console.error('Error loading sensitivity results:', error);
-                document.getElementById('sensitivity-status').innerHTML = 
+                console.error(`Error loading sensitivity results for ${prefix}:`, error);
+                statusEl.innerHTML = 
                     `<strong style="color: #ef4444;">✗ Error loading sensitivity results</strong><br>${error.message}`;
-                document.getElementById('sensitivity-status').className = 'status-box';
-                document.getElementById('sensitivity-status').style.borderLeftColor = '#ef4444';
+                statusEl.className = 'status-box';
+                statusEl.style.borderLeftColor = '#ef4444';
             }
         }
 
-        // Load and parse CSV
-        async function loadCutStats() {
+        // Load and parse CSV for eminus or eplus
+        async function loadCutStats(prefix) {
+            const statusId = `table-status-${prefix}`;
+            const containerId = `table-container-${prefix}`;
+            const statusEl = document.getElementById(statusId);
+            const containerEl = document.getElementById(containerId);
+
+            if (!statusEl || !containerEl) {
+                console.log(`Elements not found for prefix: ${prefix}`);
+                return;
+            }
+
             // Load cut descriptions from metadata file
             let cutMetadata = {};
             try {
@@ -513,15 +583,20 @@
             const finalMetadata = { ...fallbackDescriptions, ...cutMetadata };
 
             try {
-                const response = await fetch('cut_stats.csv');
+                // Try to load prefixed CSV file first
+                let csvContent = null;
+                let filename = `${prefix}_cut_stats.csv`;
+                
+                const response = await fetch(filename);
                 if (!response.ok) {
-                    document.getElementById('table-status').innerHTML = 
-                        '<strong style="color: #f59e0b;">⚠ cut_stats.csv not found</strong><br>Run analysis to generate cut statistics.';
-                    document.getElementById('table-status').className = 'status-box warning';
+                    statusEl.innerHTML = 
+                        `<strong style="color: #f59e0b;">⚠ ${filename} not found</strong><br>Run analysis to generate cut statistics.`;
+                    statusEl.className = 'status-box warning';
                     return;
                 }
 
-                const csv = await response.text();
+                csvContent = await response.text();
+                const csv = csvContent;
                 const lines = csv.trim().split('\n');
                 
                 if (lines.length < 2) {
@@ -541,10 +616,11 @@
                 rows.forEach((row, rowIndex) => {
                     const cutName = row[0];
                     const metadata = finalMetadata[cutName] || { description: 'No description available', physics: '' };
+                    const detailsId = `details-${prefix}-${cutName}`;
                     
                     // Main row with expand button
                     html += '<tr class="cut-row" data-cut="' + cutName + '">';
-                    html += `<td><button class="expand-btn" onclick="toggleCutDetails('${cutName}')">▼</button> ${cutName}</td>`;
+                    html += `<td><button class="expand-btn" onclick="toggleCutDetails('${detailsId}', this)">▼</button> ${cutName}</td>`;
                     row.slice(1).forEach(cell => {
                         html += `<td>${cell}</td>`;
                     });
@@ -556,7 +632,7 @@
                         detailsHtml += `<br><br><strong>🔬 Physics Rationale:</strong><br>${metadata.physics}`;
                     }
                     
-                    html += `<tr class="details-row" id="details-${cutName}">
+                    html += `<tr class="details-row" id="${detailsId}">
                         <td colspan="${headers.length}">
                             <div class="cut-details">
                                 ${detailsHtml}
@@ -567,100 +643,113 @@
 
                 html += '</tbody></table>';
 
-                document.getElementById('table-container').innerHTML = html;
-                document.getElementById('table-status').innerHTML = 
-                    `<strong style="color: #22c55e;">✓ Loaded ${rows.length} rows from cut_stats.csv</strong> (Click cut names to expand)`;
-                document.getElementById('table-status').className = 'status-box success';
+                containerEl.innerHTML = html;
+                statusEl.innerHTML = 
+                    `<strong style="color: #22c55e;">✓ Loaded ${rows.length} rows from ${filename}</strong> (Click cut names to expand)`;
+                statusEl.className = 'status-box success';
 
             } catch (error) {
-                console.error('Error loading CSV:', error);
-                document.getElementById('table-status').innerHTML = 
-                    `<strong style="color: #ef4444;">✗ Error loading cut_stats.csv</strong><br>${error.message}`;
-                document.getElementById('table-status').className = 'status-box';
-                document.getElementById('table-status').style.borderLeftColor = '#ef4444';
+                console.error(`Error loading cut stats for ${prefix}:`, error);
+                statusEl.innerHTML = 
+                    `<strong style="color: #ef4444;">✗ Error loading cut statistics</strong><br>${error.message}`;
+                statusEl.className = 'status-box';
+                statusEl.style.borderLeftColor = '#ef4444';
             }
         }
 
         // Toggle cut details visibility
-        window.toggleCutDetails = function(cutName) {
-            const detailsRow = document.getElementById('details-' + cutName);
-            const btn = event.target;
+        window.toggleCutDetails = function(detailsId, btn) {
+            const detailsRow = document.getElementById(detailsId);
             
-            detailsRow.classList.toggle('show');
-            btn.classList.toggle('expanded');
+            if (detailsRow) {
+                detailsRow.classList.toggle('show');
+                btn.classList.toggle('expanded');
+            }
         };
 
-        // Load plots
-        async function loadPlots() {
-            const optimizationGallery = document.getElementById('optimization-gallery');
-            const distributionsGallery = document.getElementById('distributions-gallery');
+        // Load plots for eminus or eplus
+        async function loadPlots(prefix) {
+            const optimizationGalleryId = `optimization-gallery-${prefix}`;
+            const distributionsGalleryId = `distributions-gallery-${prefix}`;
+            
+            const optimizationGallery = document.getElementById(optimizationGalleryId);
+            const distributionsGallery = document.getElementById(distributionsGalleryId);
 
-            // Known optimization plots - this ensures they always load
-            const optimizationPlots = ['recomom_selection.png', 'DT_selection.png', 'nST_selection.png', 'nOPA_selection.png', 
+            if (!optimizationGallery || !distributionsGallery) {
+                console.log(`Gallery elements not found for prefix: ${prefix}`);
+                return;
+            }
+
+            // Base plot names (will be tried with prefix)
+            const basePlots = ['recomom_selection.png', 'DT_selection.png', 'nST_selection.png', 'nOPA_selection.png', 
                                        'rmax_selection.png', 'd0_selection.png', 'tanDip_selection.png', 'trkqual_selection.png',
                                        'trkpid_selection.png', 't0err_selection.png', 'nactive_selection.png', 'time_selection.png',
                                        'truemom_selection.png'];
             
-            const distributionPlots = [
+            const baseDistributions = [
                 { name: '1D_Mom_selected.png', title: '1D Momentum Distribution' },
                 { name: '1D_Time_selected.png', title: '1D Time Distribution' },
                 { name: '2D_selected.png', title: '2D Distribution' }
             ];
-
-            console.log('Loading optimization plots:', optimizationPlots);
-            console.log('Loading distribution plots:', distributionPlots.map(p => p.name));
+            
+            console.log(`Loading optimization plots for ${prefix}:`, basePlots);
+            console.log(`Loading distribution plots for ${prefix}:`, baseDistributions.map(p => p.name));
 
             // Load optimization plots
-            optimizationPlots.forEach(plot => {
+            for (const plot of basePlots) {
+                const fileName = prefix + '_' + plot;
+                
                 const card = document.createElement('div');
                 card.className = 'plot-card';
                 card.style.opacity = '0.5';  // Initially dim
                 
                 card.innerHTML = `
-                    <img src="${plot}" alt="${plot}" style="width: 100%; height: 300px; object-fit: contain; background: #f0f0f0;">
+                    <img src="${fileName}" alt="${plot}" style="width: 100%; height: 300px; object-fit: contain; background: #f0f0f0;">
                     <div class="plot-title">${plot}</div>
-                    <a href="${plot}" class="plot-link" download>↓ Download PNG</a>
+                    <a href="${fileName}" class="plot-link" download>↓ Download PNG</a>
                 `;
                 
                 // Check if image loads
                 const img = card.querySelector('img');
                 img.onload = () => {
                     card.style.opacity = '1';
-                    console.log(`✓ Loaded optimization plot: ${plot}`);
+                    console.log(`✓ Loaded optimization plot: ${fileName}`);
                 };
                 img.onerror = () => {
-                    console.log(`✗ Failed to load optimization plot: ${plot}`);
+                    console.log(`✗ Failed to load optimization plot: ${fileName}`);
                     card.remove();
                 };
                 
                 optimizationGallery.appendChild(card);
-            });
+            }
 
             // Load distribution plots
-            distributionPlots.forEach(plot => {
+            for (const plot of baseDistributions) {
+                const fileName = prefix + '_' + plot.name;
+                
                 const card = document.createElement('div');
                 card.className = 'plot-card';
                 card.style.opacity = '0.5';  // Initially dim
                 
                 card.innerHTML = `
-                    <img src="${plot.name}" alt="${plot.name}" style="width: 100%; height: 300px; object-fit: contain; background: #f0f0f0;">
+                    <img src="${fileName}" alt="${plot.name}" style="width: 100%; height: 300px; object-fit: contain; background: #f0f0f0;">
                     <div class="plot-title">${plot.title}</div>
-                    <a href="${plot.name}" class="plot-link" download>↓ Download PNG</a>
+                    <a href="${fileName}" class="plot-link" download>↓ Download PNG</a>
                 `;
                 
                 // Check if image loads
                 const img = card.querySelector('img');
                 img.onload = () => {
                     card.style.opacity = '1';
-                    console.log(`✓ Loaded distribution plot: ${plot.name}`);
+                    console.log(`✓ Loaded distribution plot: ${fileName}`);
                 };
                 img.onerror = () => {
-                    console.log(`✗ Failed to load distribution plot: ${plot.name}`);
+                    console.log(`✗ Failed to load distribution plot: ${fileName}`);
                     card.remove();
                 };
                 
                 distributionsGallery.appendChild(card);
-            });
+            }
 
             // Add empty message check after a delay
             setTimeout(() => {
@@ -670,8 +759,8 @@
                 if (distributionsGallery.children.length === 0) {
                     distributionsGallery.innerHTML = '<div class="empty-message">No distribution plots found. Run analysis to generate plots.</div>';
                 }
-                console.log(`Optimization gallery has ${optimizationGallery.children.length} plots`);
-                console.log(`Distribution gallery has ${distributionsGallery.children.length} plots`);
+                console.log(`${prefix} - Optimization gallery has ${optimizationGallery.children.length} plots`);
+                console.log(`${prefix} - Distribution gallery has ${distributionsGallery.children.length} plots`);
             }, 2000);
         }
 
@@ -679,9 +768,14 @@
         window.addEventListener('load', () => {
             const now = new Date();
             document.getElementById('timestamp').textContent = now.toLocaleString();
-            loadSensitivityResults();
-            loadCutStats();
-            loadPlots();
+            
+            // Load data for both eminus and eplus
+            loadSensitivityResults('eminus');
+            loadSensitivityResults('eplus');
+            loadCutStats('eminus');
+            loadCutStats('eplus');
+            loadPlots('eminus');
+            loadPlots('eplus');
         });
     </script>
 </body>
