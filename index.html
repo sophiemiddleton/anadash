@@ -132,6 +132,38 @@
             background: #f9f9f9;
         }
 
+        .expand-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #667eea;
+            padding: 0 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .expand-btn.expanded {
+            transform: rotate(180deg);
+        }
+
+        .details-row {
+            display: none;
+            background: #f0f7ff;
+        }
+
+        .details-row.show {
+            display: table-row;
+        }
+
+        .cut-details {
+            padding: 15px;
+            color: #555;
+            font-size: 0.95em;
+            line-height: 1.6;
+            border-left: 4px solid #667eea;
+            background: #f5f9ff;
+        }
+
         .plot-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -408,6 +440,35 @@
 
         // Load and parse CSV
         async function loadCutStats() {
+            // Cut descriptions from analyze.py
+            const cutDescriptions = {
+                'is_reco_electron': 'Tracks are assumed to be electrons based on tracking algorithm classification',
+                'one_reco_electron': 'Exactly one reconstructed electron per event',
+                'is_reco_positron': 'Tracks are assumed to be positrons based on tracking algorithm classification',
+                'has_downstream': 'Downstream tracks with forward momentum (p_z > 0) through tracker',
+                'mc_is_electron': 'MC truth: electron particle (pdg == 11)',
+                'has_trk_front': 'Track has at least one segment intersecting TT_Front surface',
+                'good_trkpid': 'Track PID > 0.638 - strong particle identification criterion',
+                'good_trkqual': 'Track quality > 0.2 - measure of tracking algorithm confidence',
+                'within_t0': 't0 at tracker mid (500 < t_0 < 1650 ns) - time window selection',
+                'within_t0err': 't0 error < 0.9 ns - time measurement precision requirement',
+                'has_hits': 'Minimum of 20 active hits in tracker - requires sufficient track information',
+                'within_lhr_maxl': 'Loop helix maximum radius constraint (450 < R_max < 680 mm) - track geometry cut',
+                'within_d0': 'Distance of closest approach d_0 < 100 mm - impact parameter requirement',
+                'within_pitch_angle': 'Extrapolated pitch angle 0.5577 < tan(θ_Dip) < 1.0 - momentum direction cut',
+                'has_st': 'Track has N_ST > 0 - intersects Stopping Target',
+                'no_opa': 'Track avoids OPA (N_OPA == 0) - rejects tracks through outer proton absorber',
+                'no_crv_veto': 'No high-quality CRV coincidence (PEs>25, nHits≥15, span<175ns)',
+                'crv_quality': 'No CRV coincidence with start>429 and end<1700 ns within dt threshold',
+                'no_crv_timewindow': 'No CRV-track time veto: |Δt| ≥ 150 ns - cosmic ray rejection',
+                'pz_pt': 'Track-level cut: 0.5 < p_z/p_t < 1.0 (forward going momentum)',
+                'triggers': 'Event triggered required tracks (trigger passed)',
+                'within_mom_time': '95 < momentum < 115 MeV/c - narrow momentum window for signal region',
+                'within_mom_time_pos': 't0 at tracker mid (0 < t_0 < 700 ns) - early time window for positrons',
+                'early_time': 'Veto tracks with reflections - no loop helix fit requirement',
+                'reflected': 'Test cut - configuration dependent'
+            };
+
             try {
                 const response = await fetch('cut_stats.csv');
                 if (!response.ok) {
@@ -434,19 +495,34 @@
                 });
                 html += '</tr></thead><tbody>';
 
-                rows.forEach(row => {
-                    html += '<tr>';
-                    row.forEach(cell => {
+                rows.forEach((row, rowIndex) => {
+                    const cutName = row[0];
+                    const description = cutDescriptions[cutName] || 'No description available';
+                    
+                    // Main row with expand button
+                    html += '<tr class="cut-row" data-cut="' + cutName + '">';
+                    html += `<td><button class="expand-btn" onclick="toggleCutDetails('${cutName}')">▼</button> ${cutName}</td>`;
+                    row.slice(1).forEach(cell => {
                         html += `<td>${cell}</td>`;
                     });
                     html += '</tr>';
+                    
+                    // Details row (hidden by default)
+                    html += `<tr class="details-row" id="details-${cutName}">
+                        <td colspan="${headers.length}">
+                            <div class="cut-details">
+                                <strong>📋 Cut Description:</strong><br>
+                                ${description}
+                            </div>
+                        </td>
+                    </tr>`;
                 });
 
                 html += '</tbody></table>';
 
                 document.getElementById('table-container').innerHTML = html;
                 document.getElementById('table-status').innerHTML = 
-                    `<strong style="color: #22c55e;">✓ Loaded ${rows.length} rows from cut_stats.csv</strong>`;
+                    `<strong style="color: #22c55e;">✓ Loaded ${rows.length} rows from cut_stats.csv</strong> (Click cut names to expand)`;
                 document.getElementById('table-status').className = 'status-box success';
 
             } catch (error) {
@@ -457,6 +533,15 @@
                 document.getElementById('table-status').style.borderLeftColor = '#ef4444';
             }
         }
+
+        // Toggle cut details visibility
+        window.toggleCutDetails = function(cutName) {
+            const detailsRow = document.getElementById('details-' + cutName);
+            const btn = event.target;
+            
+            detailsRow.classList.toggle('show');
+            btn.classList.toggle('expanded');
+        };
 
         // Load plots
         async function loadPlots() {
