@@ -973,25 +973,6 @@
                     { label: 'Signal Efficiency (e⁺)', value: normData.signal_eff_eplus ? `${(normData.signal_eff_eplus * 100).toFixed(1)}%` : 'N/A', color: '#06b6d4' }
                 ];
 
-                const formatValue = (val) => {
-                    if (val === undefined || val === null || Number.isNaN(val)) return 'N/A';
-                    if (typeof val === 'number' && Math.abs(val) > 1000) {
-                        return val.toExponential(2);
-                    }
-                    return String(val);
-                };
-
-                const scalingParams = [
-                    { label: 'Files Used / Total', value: `${normData.nfiles_used} / ${normData.nfiles_total}`, color: '#3b82f6' },
-                    { label: 'File Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#3b82f6' },
-                    { label: 'NPOT Used', value: npotUsed ? npotUsed.toExponential(2) : 'N/A', color: '#f59e0b' },
-                    { label: 'NPOT Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#f59e0b' },
-                    { label: 'NMOT Used', value: nmotUsed ? nmotUsed.toExponential(2) : 'N/A', color: '#8b5cf6' },
-                    { label: 'NMOT Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#8b5cf6' },
-                    { label: 'Signal Efficiency (e⁻)', value: normData.signal_eff_eminus ? `${(normData.signal_eff_eminus * 100).toFixed(1)}%` : 'N/A', color: '#ef4444' },
-                    { label: 'Signal Efficiency (e⁺)', value: normData.signal_eff_eplus ? `${(normData.signal_eff_eplus * 100).toFixed(1)}%` : 'N/A', color: '#06b6d4' }
-                ];
-
                 scalingParams.forEach((param, idx) => {
                     scalingHtml += `<tr style="border-bottom: 1px solid #e5e7eb; ${idx % 2 === 0 ? 'background: #fafbfc;' : ''}">
                         <td style="padding: 12px; font-weight: 500; color: ${param.color};">● ${param.label}</td>
