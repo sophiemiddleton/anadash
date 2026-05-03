@@ -438,22 +438,32 @@
     </div>
 
     <script>
-        // Navigation
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const section = btn.getAttribute('data-section');
-                
-                // Update active button
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                // Update active section
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                const targetSection = document.getElementById(section);
-                if (targetSection) {
-                    targetSection.classList.add('active');
-                }
+        // Navigation - wrapped in DOMContentLoaded to ensure DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('.nav-btn');
+            console.log(`Navigation: Found ${buttons.length} nav buttons`);
+            
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = btn.getAttribute('data-section');
+                    console.log(`Navigation: Clicked section: ${section}`);
+                    
+                    // Update active button
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Update active section
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    const targetSection = document.getElementById(section);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                        console.log(`Navigation: Activated section ${section}`);
+                    } else {
+                        console.error(`Navigation: Could not find section with id: ${section}`);
+                    }
+                });
             });
+            console.log('Navigation: Event listeners attached successfully');
         });
 
         // Load and display sensitivity results for eminus or eplus
