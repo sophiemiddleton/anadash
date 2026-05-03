@@ -1,0 +1,14 @@
+{
+  "background_count": 1.0,
+  "exposure": 3400000000000000.0,
+  "efficiency": 0.12,
+  "confidence_level": 0.9,
+  "s_up_numeric_events": 2.823960960051299,
+  "s_up_table_events": 3.274,
+  "br_upper_limit_numeric": 6.921472941302203e-15,
+  "br_upper_limit_table": 8.024509803921569e-15,
+  "fc_low_br": 0.0,
+  "fc_high_br": 8.228717614176306e-15,
+  "required_signal_5sigma": 8.328125,
+  "note": "Divide s_up values by (exposure * efficiency) to get BR upper limit"
+}
