@@ -463,41 +463,20 @@
             const optimizationGallery = document.getElementById('optimization-gallery');
             const distributionsGallery = document.getElementById('distributions-gallery');
 
-            // Get list of selection plots dynamically
-            async function getSelectionPlots() {
-                try {
-                    const response = await fetch('.');
-                    const html = await response.text();
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    
-                    // Extract all files ending in _selection.png
-                    const selectionPlots = [];
-                    const links = doc.querySelectorAll('a[href*="_selection.png"]');
-                    links.forEach(link => {
-                        const href = link.getAttribute('href');
-                        if (href && href.endsWith('_selection.png')) {
-                            selectionPlots.push(href);
-                        }
-                    });
-                    console.log('Found selection plots:', selectionPlots);
-                    return selectionPlots;
-                } catch (e) {
-                    console.log('Could not fetch directory listing, using fallback plot list');
-                    // Fallback to known plots
-                    return ['recomom_selection.png', 'DT_selection.png', 'nST_selection.png', 'nOPA_selection.png', 
-                            'rmax_selection.png', 'd0_selection.png', 'tanDip_selection.png', 'trkqual_selection.png',
-                            'trkpid_selection.png', 't0err_selection.png', 'nactive_selection.png', 'time_selection.png',
-                            'truemom_selection.png'];
-                }
-            }
-
-            const optimizationPlots = await getSelectionPlots();
+            // Known optimization plots - this ensures they always load
+            const optimizationPlots = ['recomom_selection.png', 'DT_selection.png', 'nST_selection.png', 'nOPA_selection.png', 
+                                       'rmax_selection.png', 'd0_selection.png', 'tanDip_selection.png', 'trkqual_selection.png',
+                                       'trkpid_selection.png', 't0err_selection.png', 'nactive_selection.png', 'time_selection.png',
+                                       'truemom_selection.png'];
+            
             const distributionPlots = [
                 { name: '1D_Mom_selected.png', title: '1D Momentum Distribution' },
                 { name: '1D_Time_selected.png', title: '1D Time Distribution' },
                 { name: '2D_selected.png', title: '2D Distribution' }
             ];
+
+            console.log('Loading optimization plots:', optimizationPlots);
+            console.log('Loading distribution plots:', distributionPlots.map(p => p.name));
 
             // Load optimization plots
             optimizationPlots.forEach(plot => {
@@ -515,10 +494,10 @@
                 const img = card.querySelector('img');
                 img.onload = () => {
                     card.style.opacity = '1';
-                    console.log(`✓ Loaded: ${plot}`);
+                    console.log(`✓ Loaded optimization plot: ${plot}`);
                 };
                 img.onerror = () => {
-                    console.log(`✗ Failed to load: ${plot}`);
+                    console.log(`✗ Failed to load optimization plot: ${plot}`);
                     card.remove();
                 };
                 
@@ -541,10 +520,10 @@
                 const img = card.querySelector('img');
                 img.onload = () => {
                     card.style.opacity = '1';
-                    console.log(`✓ Loaded: ${plot.name}`);
+                    console.log(`✓ Loaded distribution plot: ${plot.name}`);
                 };
                 img.onerror = () => {
-                    console.log(`✗ Failed to load: ${plot.name}`);
+                    console.log(`✗ Failed to load distribution plot: ${plot.name}`);
                     card.remove();
                 };
                 
@@ -559,6 +538,8 @@
                 if (distributionsGallery.children.length === 0) {
                     distributionsGallery.innerHTML = '<div class="empty-message">No distribution plots found. Run analysis to generate plots.</div>';
                 }
+                console.log(`Optimization gallery has ${optimizationGallery.children.length} plots`);
+                console.log(`Distribution gallery has ${distributionsGallery.children.length} plots`);
             }, 2000);
         }
 
