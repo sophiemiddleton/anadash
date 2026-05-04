@@ -21,10 +21,5 @@
   "rpc_internal_events": 224657.0774084217,
   "rpc_external_events": 32558996.72585822,
   "rmc_internal_events": 13599904.378650516,
-  "rmc_external_events": 1971000634.5870314,
-  "nfiles_total": 496,
-  "nfiles_used": 1,
-  "files_fraction": 0.002016129032258065,
-  "signal_eff_eminus": 0.12,
-  "signal_eff_eplus": 0.10
+  "rmc_external_events": 1971000634.5870314
 }
