@@ -525,9 +525,17 @@
                         html += '<tr style="height: 10px;"><td colspan="2"></td></tr>';
                     } else {
                         const value = data[key];
-                        const formattedValue = typeof value === 'number' 
-                            ? (value > 1e10 ? value.toExponential(2) : value.toFixed(6))
-                            : value;
+                        let formattedValue;
+                        if (typeof value === 'number') {
+                            // Use scientific notation for very large or very small numbers
+                            if (Math.abs(value) > 1e10 || (Math.abs(value) < 1e-5 && value !== 0)) {
+                                formattedValue = value.toExponential(2);
+                            } else {
+                                formattedValue = value.toFixed(6);
+                            }
+                        } else {
+                            formattedValue = value;
+                        }
                         html += `<tr style="border-bottom: 1px solid #dee2e6;">
                             <td style="padding: 12px; font-weight: 600; color: #333;">${label}</td>
                             <td style="padding: 12px; text-align: right; color: #667eea; font-family: monospace;">${formattedValue}${unit}</td>
@@ -956,6 +964,8 @@
                 const filesFrac = nfiles_used / nfiles_total;
                 const npotUsed = normData.beam_npot * filesFrac;
                 const nmotUsed = normData.beam_nmot * filesFrac;
+                const onspillUsed = normData.beam_onspill_time * filesFrac;
+                const livetimeUsed = normData.beam_livetime * filesFrac;
                 console.log('Using from config - nfiles_used:', nfiles_used, 'nfiles_total:', nfiles_total, 'filesFrac:', filesFrac);
                 console.log('After scaling calc - npotUsed:', npotUsed, 'nmotUsed:', nmotUsed);
                 console.log('signal_eff_eminus:', normData.signal_eff_eminus, 'signal_eff_eplus:', normData.signal_eff_eplus);
@@ -967,6 +977,8 @@
                     { label: 'NPOT Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#f59e0b' },
                     { label: 'NMOT Used', value: nmotUsed ? nmotUsed.toExponential(2) : 'N/A', color: '#8b5cf6' },
                     { label: 'NMOT Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#8b5cf6' },
+                    { label: 'On-Spill Time Used (s)', value: onspillUsed ? onspillUsed.toExponential(2) : 'N/A', color: '#10b981' },
+                    { label: 'Beam Livetime Used (s)', value: livetimeUsed ? livetimeUsed.toExponential(2) : 'N/A', color: '#06b6d4' },
                     { label: 'Signal Efficiency (e⁻)', value: normData.signal_eff_eminus ? `${(normData.signal_eff_eminus * 100).toFixed(1)}%` : 'N/A', color: '#ef4444' },
                     { label: 'Signal Efficiency (e⁺)', value: normData.signal_eff_eplus ? `${(normData.signal_eff_eplus * 100).toFixed(1)}%` : 'N/A', color: '#06b6d4' }
                 ];
