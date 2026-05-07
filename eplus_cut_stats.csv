@@ -1,14 +1,14 @@
 Cut,Group,Events Passing,Absolute [%],Relative [%],Description
-No cuts,N/A,923200,100.0,100.0,No selection applied
-is_reco_positron,,583191,63.170602253032925,63.170602253032925,Tracks are assumed to be positron (trk)
-has_downstream,,277229,30.029137781629117,47.536570351737254,Downstream tracks (p_z > 0 through tracker)
-has_trk_front_seg,,274082,29.688258232235704,98.86483737271354,Track has >=1 segment intersecting TT_Front
-good_trkpid,,34006,3.683492201039861,12.407235790748754,Track PID > 0.638
-within_t0err,,33780,3.6590121317157713,99.3354113979886,t0err < 0.9
-has_hits,,26111,2.8283145580589255,77.2972172883363,Minimum of 20 active hits in the tracker
-has_st,,9069,0.982344020797227,34.73248822335414,has Nst > 0
-no_opa,,8887,0.9626299826689775,97.99316352409306,has N_opa == 0
-no_crv_quality,,8429,0.9130199306759099,94.84640486103298,"No high-quality CRV coincidence (PEs>25, nHits>=15, span<175ns)"
-no_crv_timewindow,,8420,0.9120450606585789,99.89322576818128,No CRV coincidence with start>429 and end<1700 within dt threshold
-no_crv_veto,,8419,0.9119367417677642,99.98812351543943,No crv-trk veto: |dt| >= 150 ns
-pz_over_pt,,7982,0.8646013864818024,94.80935978144672,Track-level cut: 0.5 < pz/pt < 1.0 (pt = transverse mag)
+No cuts,N/A,983609,100.0,100.0,No selection applied
+is_reco_positron,,622931,63.33116106095004,63.33116106095004,Tracks are assumed to be positron (trk)
+has_downstream,,299071,30.405476159734203,48.010293274857084,Downstream tracks (p_z > 0 through tracker)
+has_trk_front_seg,,296127,30.106170236343914,99.01561836486988,Track has >=1 segment intersecting TT_Front
+good_trkpid,,37081,3.769892304767443,12.521992253323743,Track PID > 0.638
+within_t0err,,36756,3.7368507201540444,99.12354035759553,t0err < 0.9
+has_hits,,27559,2.801824708801973,74.97823484601153,Minimum of 20 active hits in the tracker
+has_st,,9155,0.9307560219558787,33.21963786784716,has Nst > 0
+no_opa,,8948,0.909711074217499,97.7389404696887,has N_opa == 0
+no_crv_quality,,8426,0.8566412060076717,94.16629414394279,"No high-quality CRV coincidence (PEs>25, nHits>=15, span<175ns)"
+no_crv_timewindow,,8386,0.8525745494398688,99.52527889864704,No CRV coincidence with start>429 and end<1700 within dt threshold
+no_crv_veto,,8380,0.8519645509546984,99.92845218220843,No crv-trk veto: |dt| >= 150 ns
+pz_over_pt,,7910,0.804181336283015,94.39140811455847,Track-level cut: 0.5 < pz/pt < 1.0 (pt = transverse mag)

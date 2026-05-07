@@ -1,8 +1,8 @@
 {
-  "dataset_name": "nts.mu2e.ensembleMDS3c.MDC2025-001.root",
+  "dataset_name": "nts.mu2e.ensembleMDS3cMix1BB.MDC2025-001.root",
   "location": "disk",
-  "nfiles_total": 496,
+  "nfiles_total": 281,
   "nfiles_used": 100,
   "jobs": 16,
-  "timestamp": "2026-05-04T00:37:15.228458"
+  "timestamp": "2026-05-07T14:15:09.608808"
 }
