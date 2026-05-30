@@ -1,14 +1,14 @@
 {
-  "background_count": 7.0,
+  "background_count": 8.0,
   "exposure": 3873991934988000.0,
   "efficiency": 0.1,
   "confidence_level": 0.9,
-  "s_up_numeric_events": 4.79404645867725,
-  "s_up_table_events": 5.882,
-  "br_upper_limit_numeric": 1.237495208851564e-14,
-  "br_upper_limit_table": 1.518330471180555e-14,
+  "s_up_numeric_events": 5.022302510885872,
+  "s_up_table_events": 6.18,
+  "br_upper_limit_numeric": 1.2964153243394476e-14,
+  "br_upper_limit_table": 1.5952537082447856e-14,
   "fc_low_br": 0.0,
-  "fc_high_br": 1.4276817677875218e-14,
-  "required_signal_5sigma": 16.9453125,
+  "fc_high_br": 1.5464745553654162e-14,
+  "required_signal_5sigma": 17.875,
   "note": "Divide s_up values by (exposure * efficiency) to get BR upper limit"
 }

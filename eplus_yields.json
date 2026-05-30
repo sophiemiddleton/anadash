@@ -1,18 +1,18 @@
 {
-  "dio": 32,
+  "dio": 0,
   "ipa": 0,
   "cem": 0,
   "cep": 0,
-  "erpc": 81,
-  "irpc": 107,
-  "ermc": 4132,
-  "irmc": 3159,
+  "erpc": 77,
+  "irpc": 111,
+  "ermc": 3904,
+  "irmc": 2983,
   "flateminus": 0,
   "flateplus": 0,
-  "cosmic": 431,
-  "others": 7905,
-  "signal_reco": 7.0,
-  "background_reco": 7911.0,
+  "cosmic": 385,
+  "others": 7457,
+  "signal_reco": 8.0,
+  "background_reco": 7455.0,
   "signal_sr": 0.0,
-  "background_sr": 7.0
+  "background_sr": 8.0
 }
