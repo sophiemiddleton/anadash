@@ -1,0 +1,26 @@
+{
+ "labels": "MC truth of the track primary (mds_sensitivity.track_labels)",
+ "signal_window": {
+  "mom": [
+   103.34,
+   104.74
+  ],
+  "time": [
+   640.0,
+   1650.0
+  ]
+ },
+ "selected": {
+  "CE": 73,
+  "Cosmic": 53,
+  "DIO": 49,
+  "RPC": 42,
+  "RMC": 2
+ },
+ "selected_total": 219,
+ "in_signal_window": {
+  "CE": 42,
+  "Cosmic": 2
+ },
+ "in_signal_window_total": 44
+}

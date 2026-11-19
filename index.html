@@ -268,756 +268,261 @@
             color: #666;
             font-size: 0.9em;
         }
+        .status-box.fail { border-left-color: #ef4444; background: #fef2f2; }
+        .verdict { display: inline-block; padding: 2px 10px; border-radius: 4px; font-weight: 700; color: white; }
+        .verdict.PASS { background: #16a34a; } .verdict.WARN { background: #d97706; } .verdict.FAIL { background: #dc2626; }
+        .muted { color: #666; font-size: 0.92em; }
+        td.num { text-align: right; font-family: 'Courier New', monospace; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎯 Mu2e Reference Analysis Dashboard</h1>
-            <p>Cut Statistics & Optimization Plots from pyCount</p>
+            <h1>Mu2e Reference Analysis Dashboard</h1>
+            <p id="header-dataset">pyCount, validated against RooCount and Shape</p>
         </div>
 
         <div class="nav">
             <button class="nav-btn active" data-section="overview">Overview</button>
-            <button class="nav-btn" data-section="sensitivity">Sensitivity Results</button>
-            <button class="nav-btn" data-section="statistics">Cut Statistics</button>
-            <button class="nav-btn" data-section="optimization">Optimization Plots</button>
+            <button class="nav-btn" data-section="sensitivity">Sensitivity</button>
+            <button class="nav-btn" data-section="validation">Validation</button>
+            <button class="nav-btn" data-section="statistics">Cut Flow &amp; Yields</button>
             <button class="nav-btn" data-section="distributions">Distributions</button>
-            <button class="nav-btn" data-section="normalization">Normalization</button>
             <button class="nav-btn" data-section="documentation">Documentation</button>
         </div>
 
         <div class="content">
-            <!-- Overview Section -->
             <div class="section active" id="overview">
-                <h2>Analysis Results Overview</h2>
-                <div class="status-box success">
-                    <strong>✓ Ready to Display Results</strong><br>
-                    This dashboard displays the latest analysis outputs from the pyCount directory.
-                </div>
-                <p style="margin-bottom: 15px; line-height: 1.6;">
-                    The Mu2e experiment searches for charged-lepton flavor violating (CLFV) conversions of muons to electrons in the nuclear field. This process is heavily suppressed in the Standard Model but predicted by many beyond-Standard-Model theories. The experiment aims to achieve unprecedented sensitivity to the muon-to-electron conversion process.
-                </p>
-                <p style="margin-bottom: 15px; line-height: 1.6;">
-                    <strong>Physics Background:</strong> The primary backgrounds to the signal are cosmic-ray-induced backgrounds, beam-related backgrounds (DIO - Decay In Orbit, RPC - Radiative Pion Capture) backgrounds. This analysis implements a comprehensive cut strategy to suppress these backgrounds while maintaining high signal efficiency for the Ce conversion signature.
-                </p>
-                <p style="margin-bottom: 15px; line-height: 1.6;">
-                    <strong>Analysis Purpose:</strong> This reference analysis optimizes event selection cuts to achieve the best signal sensitivity by tuning the trade-off between signal efficiency and background rejection. The dashboard displays:
-                </p>
-                <ul style="margin-left: 30px; margin-bottom: 20px; line-height: 1.8;">
-                    <li><strong>Sensitivity Results</strong>: Branching fraction upper limits and required signal for discovery significance</li>
-                    <li><strong>Cut Statistics</strong>: Event counts and efficiencies at each selection stage from cut_stats.csv</li>
-                    <li><strong>Optimization Plots</strong>: Selection optimization curves showing signal vs. background rejection (*_selection.png)</li>
-                    <li><strong>Distribution Plots</strong>: Reconstructed momentum and time distributions for signal and background processes</li>
-                </ul>
-                <p style="color: #666;">
-                    Use the navigation buttons above to explore different sections of the analysis results.
+                <h2>This run</h2>
+                <div id="overview-status" class="status-box">Loading run.json...</div>
+                <div id="overview-container"></div>
+                <p class="muted" style="margin-top: 20px; line-height: 1.6;">
+                    The reference analysis searches for &mu;<sup>-</sup> &rarr; e<sup>-</sup> (and e<sup>+</sup>) conversion with a
+                    cut-and-count. Its nominal selection is pyfitter's run1a. On an MDS pseudo-experiment it gives the
+                    sensitivity (pyfitter's CLs counting statistics, normalised with the MDS bookkeeping) and is validated
+                    against two independent implementations: RooCount (C++ port of the same selection) and Shape
+                    (an unbinned 2D fit with pyfitter's model). All numbers on this page are read from the run's output files.
                 </p>
             </div>
 
-            <!-- Sensitivity Results Section -->
             <div class="section" id="sensitivity">
-                <h2>Sensitivity Results</h2>
-                
-                <div class="subsection">
-                    <h3 style="color: #2563eb;">Electron (μ⁻ → e⁻) Analysis</h3>
-                    <div id="sensitivity-status-eminus" class="status-box">Loading sensitivity results...</div>
-                    <div id="sensitivity-container-eminus"></div>
-                </div>
-
-                <div class="subsection">
-                    <h3 style="color: #dc2626;">Positron (μ⁺ → e⁺) Analysis</h3>
-                    <div id="sensitivity-status-eplus" class="status-box">Loading sensitivity results...</div>
-                    <div id="sensitivity-container-eplus"></div>
-                </div>
+                <h2>Sensitivity</h2>
+                <div class="subsection"><h3 style="color: #2563eb;">&mu;<sup>-</sup> &rarr; e<sup>-</sup></h3>
+                    <div id="sensitivity-status-eminus" class="status-box">Loading...</div>
+                    <div id="sensitivity-container-eminus"></div></div>
+                <div class="subsection"><h3 style="color: #dc2626;">&mu;<sup>-</sup> &rarr; e<sup>+</sup></h3>
+                    <div id="sensitivity-status-eplus" class="status-box">Loading...</div>
+                    <div id="sensitivity-container-eplus"></div></div>
             </div>
 
-            <!-- Cut Statistics Section -->
+            <div class="section" id="validation">
+                <h2>Validation: pyCount vs RooCount vs Shape</h2>
+                <div id="validation-status" class="status-box">Loading validation_eminus.json...</div>
+                <div id="validation-container"></div>
+                <div class="plot-gallery" id="validation-plots"></div>
+            </div>
+
             <div class="section" id="statistics">
-                <h2>Cut Statistics</h2>
-                
-                <div class="subsection">
-                    <h3 style="color: #2563eb;">Electron (μ⁻ → e⁻) Analysis</h3>
-                    <div id="table-status-eminus" class="status-box">Loading cut_stats.csv...</div>
-                    <div class="table-container" id="table-container-eminus"></div>
-                    <div id="yields-container-eminus" style="margin-top: 30px; padding: 20px; background: #fafbfc; border-radius: 8px; border-left: 4px solid #2563eb;"></div>
-                </div>
-
-                <div class="subsection">
-                    <h3 style="color: #dc2626;">Positron (μ⁺ → e⁺) Analysis</h3>
-                    <div id="table-status-eplus" class="status-box">Loading cut_stats.csv...</div>
-                    <div class="table-container" id="table-container-eplus"></div>
-                    <div id="yields-container-eplus" style="margin-top: 30px; padding: 20px; background: #fafbfc; border-radius: 8px; border-left: 4px solid #dc2626;"></div>
-                </div>
+                <h2>Cut Flow &amp; Yields</h2>
+                <div class="subsection"><h3 style="color: #2563eb;">&mu;<sup>-</sup> &rarr; e<sup>-</sup></h3>
+                    <div id="counts-container-eminus"></div>
+                    <div id="table-status-eminus" class="status-box">Loading...</div>
+                    <div class="table-container" id="table-container-eminus"></div></div>
+                <div class="subsection"><h3 style="color: #dc2626;">&mu;<sup>-</sup> &rarr; e<sup>+</sup></h3>
+                    <div id="counts-container-eplus"></div>
+                    <div id="table-status-eplus" class="status-box">Loading...</div>
+                    <div class="table-container" id="table-container-eplus"></div></div>
             </div>
 
-            <!-- Optimization Plots Section -->
-            <div class="section" id="optimization">
-                <h2>Optimization Plots</h2>
-                
-                <div class="subsection">
-                    <h3 style="color: #2563eb;">Electron (μ⁻ → e⁻) Analysis</h3>
-                    <p style="margin-bottom: 20px; color: #666;">
-                        Selection optimization plots showing efficiency vs. background rejection for various cut criteria.
-                    </p>
-                    <div class="plot-gallery" id="optimization-gallery-eminus"></div>
-                </div>
-
-                <div class="subsection">
-                    <h3 style="color: #dc2626;">Positron (μ⁺ → e⁺) Analysis</h3>
-                    <p style="margin-bottom: 20px; color: #666;">
-                        Selection optimization plots showing efficiency vs. background rejection for various cut criteria.
-                    </p>
-                    <div class="plot-gallery" id="optimization-gallery-eplus"></div>
-                </div>
-            </div>
-
-            <!-- Distributions Section -->
             <div class="section" id="distributions">
-                <h2>Distributions</h2>
-                
-                <div class="subsection">
-                    <h3 style="color: #2563eb;">Electron (μ⁻ → e⁻) Analysis</h3>
-                    <p style="margin-bottom: 20px; color: #666;">
-                        1D and 2D analysis plots from the pyCount run_count analysis.
-                    </p>
-                    <div class="plot-gallery" id="distributions-gallery-eminus"></div>
-                </div>
-
-                <div class="subsection">
-                    <h3 style="color: #dc2626;">Positron (μ⁺ → e⁺) Analysis</h3>
-                    <p style="margin-bottom: 20px; color: #666;">
-                        1D and 2D analysis plots from the pyCount run_count analysis.
-                    </p>
-                    <div class="plot-gallery" id="distributions-gallery-eplus"></div>
-                </div>
+                <h2>Distributions of the selected tracks</h2>
+                <div class="subsection"><h3 style="color: #2563eb;">&mu;<sup>-</sup> &rarr; e<sup>-</sup></h3>
+                    <div class="plot-gallery" id="distributions-gallery-eminus"></div></div>
+                <div class="subsection"><h3 style="color: #dc2626;">&mu;<sup>-</sup> &rarr; e<sup>+</sup></h3>
+                    <div class="plot-gallery" id="distributions-gallery-eplus"></div></div>
             </div>
 
-            <!-- Documentation Section -->
             <div class="section" id="documentation">
                 <h2>Documentation</h2>
-                
-                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">🔬 Creating a New Sample</h3>
-                <p style="margin-bottom: 15px; line-height: 1.8;">
-                    To create a new Mu2e ensemble sample for analysis, configure the job using the Mu2e Production JobConfig system:
-                </p>
-                <p style="margin-left: 20px; padding: 15px; background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 4px; margin-bottom: 20px;">
-                    📁 <a href="https://github.com/Mu2e/Production/tree/main/JobConfig/ensemble" style="color: #667eea; text-decoration: none; font-weight: 600;" target="_blank">Mu2e Production JobConfig/ensemble</a>
-                    <br><span style="color: #666; font-size: 0.95em;">Browse existing ensemble configurations and add your sample to the production pipeline</span>
-                </p>
+                <h3 style="color: #667eea; margin: 20px 0 10px;">Producing this page</h3>
+                <p style="line-height: 1.8;">From <code>RefAna/pyCount</code>, with the Mu2e ana environment:</p>
+                <pre style="background: #f5f5f5; padding: 12px; border-radius: 4px; overflow-x: auto;">
+# MDS pseudo-experiment: sensitivity + validation (RooCount and Shape need a muse build of RefAna)
+python run_reference_analysis.py --pe /exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1
 
-                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">⚙️ Running the Automated Analysis</h3>
-                <p style="margin-bottom: 15px; line-height: 1.8;">
-                    Once your sample is available in the Mu2e Data Catalog, run the automated analysis pipeline on the Elastic Analysis Facility (EAF):
-                </p>
-                <p style="margin-left: 20px; padding: 15px; background: #f5f5f5; border-left: 4px solid #764ba2; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 0.9em; word-break: break-all; margin-bottom: 20px;">
-                    <strong style="color: #764ba2;">Command:</strong><br>
-                    ./run_analysis.sh --defname nts.mu2e.ensembleMDS3c.MDC2025-001.root --location "disk" --jobs 8
-                </p>
-                <p style="margin-left: 20px; margin-bottom: 15px; line-height: 1.8; color: #555;">
-                    <strong>Parameters:</strong><br>
-                    • <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">--defname</code> - Dataset name from Mu2e Data Catalog<br>
-                    • <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">--location</code> - Data location: "disk", "tape", "scratch", or "nersc"<br>
-                    • <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">--jobs</code> - Number of parallel processing jobs
-                </p>
-                <p style="margin-left: 20px; padding: 10px; background: #fffbea; border-left: 4px solid #f59e0b; border-radius: 4px; margin-bottom: 20px; color: #666;">
-                    💡 <strong>Tip:</strong> Analysis results will be automatically displayed in this dashboard once processing completes.
-                </p>
-
-                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">📚 Additional Resources</h3>
-                <ul style="margin-left: 30px; margin-bottom: 20px; line-height: 1.8;">
-                    <li><a href="https://github.com/Mu2e/Production" style="color: #667eea; text-decoration: none; font-weight: 600;" target="_blank">Mu2e Production Repository</a> - Main production configuration and workflow</li>
-                    <li><a href="https://mu2e.fnal.gov/public/hep/data_catalogs/" style="color: #667eea; text-decoration: none; font-weight: 600;" target="_blank">Mu2e Data Catalog</a> - Browse available datasets</li>
+# SAM dataset: cut flows and yields only
+python run_reference_analysis.py --defname &lt;SAM definition&gt; --location disk --jobs 8</pre>
+                <p style="line-height: 1.8;">Outputs and provenance (git commit, cut profile, input checksums) are in
+                    <code>pyCount/runs/&lt;stamp&gt;_&lt;dataset&gt;/</code>; the files shown here are copied from there.
+                    Cut definitions: <code>RefAna/config/cuts.yaml</code>. Validation: <code>RefAna/compare/README.md</code>.</p>
+                <h3 style="color: #667eea; margin: 20px 0 10px;">Resources</h3>
+                <ul style="margin-left: 30px; line-height: 1.8;">
+                    <li><a href="https://github.com/Mu2e/pyfitter" target="_blank">Mu2e/pyfitter</a>: the analysis whose selection and model are the reference</li>
+                    <li><a href="https://github.com/Mu2e/Production/tree/main/JobConfig/ensemble" target="_blank">Mu2e Production JobConfig/ensemble</a>: MDS samples</li>
                 </ul>
-            </div>
-
-            <!-- Normalization Section -->
-            <div class="section" id="normalization">
-                <h2>Normalization & Scaling Parameters</h2>
-                <div id="normalization-full-container" style="margin-bottom: 30px;"></div>
-                <div id="normalization-scaling-container"></div>
             </div>
         </div>
 
-        <footer>
-            <p>Mu2e Reference Analysis Dashboard | Last Updated: <span id="timestamp"></span></p>
-            <p><a href="../" style="color: #667eea; text-decoration: none;">← Back to pyCount Directory</a></p>
-        </footer>
+        <footer><p>Mu2e Reference Analysis Dashboard | <span id="footer-run"></span></p></footer>
     </div>
 
     <script>
-        // Navigation - wrapped in DOMContentLoaded to ensure DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
-            const buttons = document.querySelectorAll('.nav-btn');
-            console.log(`Navigation: Found ${buttons.length} nav buttons`);
-            
-            buttons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const section = btn.getAttribute('data-section');
-                    console.log(`Navigation: Clicked section: ${section}`);
-                    
-                    // Update active button
-                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    
-                    // Update active section
-                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                    const targetSection = document.getElementById(section);
-                    if (targetSection) {
-                        targetSection.classList.add('active');
-                        console.log(`Navigation: Activated section ${section}`);
-                    } else {
-                        console.error(`Navigation: Could not find section with id: ${section}`);
-                    }
-                });
+        const PREFIXES = ['eminus', 'eplus'];
+        const SIGN_OF = {eminus: 'minus', eplus: 'plus'};
+
+        async function getJSON(name) {
+            const r = await fetch(name);
+            return r.ok ? r.json() : null;
+        }
+        function esc(s) {
+            return String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+        }
+        function sci(x, d = 2) { return (x === null || x === undefined) ? '&ndash;' : Number(x).toExponential(d); }
+        function setStatus(id, cls, html) { const el = document.getElementById(id); el.className = 'status-box ' + cls; el.innerHTML = html; }
+        function table(header, rows) {
+            let h = '<table><thead><tr>' + header.map(x => `<th>${x}</th>`).join('') + '</tr></thead><tbody>';
+            rows.forEach(r => { h += '<tr>' + r.map((c, i) => `<td${i && typeof c === 'number' ? ' class="num"' : ''}>${c}</td>`).join('') + '</tr>'; });
+            return h + '</tbody></table>';
+        }
+
+        async function loadOverview(run) {
+            if (!run) { setStatus('overview-status', 'warning', 'run.json not found: no run has been published here yet.'); return; }
+            const ss = run.signal_set || {};
+            const dataset = run.mode === 'mds'
+                ? `MDS pseudo-experiment <b>${esc(ss.mds)}</b>, signal set <b>${esc(ss.label)}</b>, pe ${esc(ss.pe)}`
+                : `Dataset <b>${esc(run.dataset)}</b> (${run.files_used} of ${run.files_total} files; no sensitivity without MDS bookkeeping)`;
+            document.getElementById('header-dataset').innerHTML = dataset;
+            document.getElementById('footer-run').textContent = `run ${run.date}, RefAna ${String(run.git_commit || '?').slice(0, 10)}${run.git_dirty ? ' (uncommitted changes)' : ''}`;
+            const rows = [['Input', dataset], ['Files', run.files_used], ['Date', esc(run.date)],
+                          ['RefAna commit', esc(String(run.git_commit || '?').slice(0, 10)) + (run.git_dirty ? ' <span class="muted">(uncommitted changes)</span>' : '')],
+                          ['Run directory', `<code>${esc(run.run_dir)}</code>`]];
+            Object.entries(run.signs || {}).forEach(([sign, s]) => {
+                const v = s.validation ? `, validation <span class="verdict ${s.validation}">${s.validation}</span>` : '';
+                rows.push([`e${sign === 'minus' ? '&minus;' : '+'} channel`, `profile <code>${esc(s.profile)}</code> (cut set ${esc(s.cutset)}), ${esc(s.status)}${v}`]);
             });
-            console.log('Navigation: Event listeners attached successfully');
-        });
-
-        // Load and display sensitivity results for eminus or eplus
-        async function loadSensitivityResults(prefix) {
-            const statusId = `sensitivity-status-${prefix}`;
-            const containerId = `sensitivity-container-${prefix}`;
-            const statusEl = document.getElementById(statusId);
-            const containerEl = document.getElementById(containerId);
-
-            if (!statusEl || !containerEl) {
-                console.log(`Elements not found for prefix: ${prefix}`);
-                return;
-            }
-
-            try {
-                const response = await fetch(`${prefix}_sensitivity_result.json`);
-                if (!response.ok) {
-                    statusEl.innerHTML = 
-                        `<strong style="color: #f59e0b;">⚠ ${prefix}_sensitivity_result.json not found</strong><br>Run analysis with count to generate sensitivity results.`;
-                    statusEl.className = 'status-box warning';
-                    return;
-                }
-
-                const data = await response.json();
-
-                // Create formatted display
-                let html = '<div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">';
-                html += '<table style="width: 100%; margin-bottom: 20px;">';
-                html += '<thead><tr style="background: #667eea; color: white;"><th style="padding: 12px; text-align: left;">Parameter</th><th style="padding: 12px; text-align: right;">Value</th></tr></thead>';
-                html += '<tbody>';
-
-                const displayFields = [
-                    ['Background Count', 'background_count', ''],
-                    ['Exposure', 'exposure', ' effective stopped muons'],
-                    ['Signal Efficiency', 'efficiency', ''],
-                    ['Confidence Level', 'confidence_level', ''],
-                    ['', '', ''],
-                    ['Expected Upper Limit (numeric)', 's_up_numeric_events', ' events'],
-                    ['Expected Upper Limit (table)', 's_up_table_events', ' events'],
-                    ['BR Upper Limit (numeric)', 'br_upper_limit_numeric', ''],
-                    ['BR Upper Limit (table)', 'br_upper_limit_table', ''],
-                    ['', '', ''],
-                    ['FC Low BR', 'fc_low_br', ''],
-                    ['FC High BR', 'fc_high_br', ''],
-                    ['', '', ''],
-                    ['Required Signal (5σ)', 'required_signal_5sigma', ' events']
-                ];
-
-                displayFields.forEach(([label, key, unit]) => {
-                    if (!label) {
-                        html += '<tr style="height: 10px;"><td colspan="2"></td></tr>';
-                    } else {
-                        const value = data[key];
-                        let formattedValue;
-                        if (typeof value === 'number') {
-                            // Use scientific notation for very large or very small numbers
-                            if (Math.abs(value) > 1e10 || (Math.abs(value) < 1e-5 && value !== 0)) {
-                                formattedValue = value.toExponential(2);
-                            } else {
-                                formattedValue = value.toFixed(6);
-                            }
-                        } else {
-                            formattedValue = value;
-                        }
-                        html += `<tr style="border-bottom: 1px solid #dee2e6;">
-                            <td style="padding: 12px; font-weight: 600; color: #333;">${label}</td>
-                            <td style="padding: 12px; text-align: right; color: #667eea; font-family: monospace;">${formattedValue}${unit}</td>
-                        </tr>`;
-                    }
-                });
-
-                html += '</tbody></table>';
-                html += `<p style="color: #666; font-size: 0.9em; font-style: italic;">${data.note}</p>`;
-                html += '</div>';
-
-                containerEl.innerHTML = html;
-                statusEl.innerHTML = 
-                    '<strong style="color: #22c55e;">✓ Sensitivity results loaded successfully</strong>';
-                statusEl.className = 'status-box success';
-
-            } catch (error) {
-                console.error(`Error loading sensitivity results for ${prefix}:`, error);
-                statusEl.innerHTML = 
-                    `<strong style="color: #ef4444;">✗ Error loading sensitivity results</strong><br>${error.message}`;
-                statusEl.className = 'status-box';
-                statusEl.style.borderLeftColor = '#ef4444';
-            }
+            setStatus('overview-status', 'success', 'Run loaded');
+            document.getElementById('overview-container').innerHTML = table(['', ''], rows);
         }
 
-        // Load and parse CSV for eminus or eplus
-        async function loadCutStats(prefix) {
-            const statusId = `table-status-${prefix}`;
-            const containerId = `table-container-${prefix}`;
-            const statusEl = document.getElementById(statusId);
-            const containerEl = document.getElementById(containerId);
-
-            if (!statusEl || !containerEl) {
-                console.log(`Elements not found for prefix: ${prefix}`);
+        async function loadSensitivity(prefix, run) {
+            const s = await getJSON(`${prefix}_sensitivity_result.json`);
+            const id = `sensitivity-status-${prefix}`;
+            if (!s) {
+                const why = !run || !(SIGN_OF[prefix] in (run.signs || {})) ? 'this channel was not run'
+                    : run.mode !== 'mds' ? 'the input is not an MDS pseudo-experiment (no exposure or signal normalisation)'
+                    : 'no sensitivity file was produced';
+                setStatus(id, 'warning', `No sensitivity: ${why}.`);
                 return;
             }
-
-            // Load cut descriptions from metadata file
-            let cutMetadata = {};
-            try {
-                const metadataResponse = await fetch('cut_metadata.json');
-                if (metadataResponse.ok) {
-                    const metadata = await metadataResponse.json();
-                    // Build metadata lookup from file
-                    Object.entries(metadata.cuts).forEach(([key, cutData]) => {
-                        cutMetadata[key] = cutData;
-                    });
-                    console.log('Loaded cut metadata from cut_metadata.json');
-                } else {
-                    console.log('cut_metadata.json not found, using fallback descriptions');
-                }
-            } catch (e) {
-                console.log('Could not load cut_metadata.json, using fallback descriptions:', e);
-            }
-
-            // Fallback descriptions if metadata file not available
-            const fallbackDescriptions = {
-                'is_reco_electron': { description: 'Tracks are assumed to be electrons based on tracking algorithm classification', physics: 'Selects electron-like tracks from the tracker quality information' },
-                'one_reco_electron': { description: 'Exactly one reconstructed electron per event', physics: 'Event-level cut to ensure single-particle signature, reduces backgrounds from multi-track events' },
-                'is_reco_positron': { description: 'Tracks are assumed to be positrons based on tracking algorithm classification', physics: 'Selects positron-like tracks (opposite charge from electrons)' },
-                'has_downstream': { description: 'Downstream tracks with forward momentum (p_z > 0) through tracker', physics: 'Requires tracks to pass through downstream tracker detector, rejects upstream-only tracks' },
-                'mc_is_electron': { description: 'MC truth: electron particle (pdg == 11)', physics: 'Simulation-only cut for validation, ensures we\'re looking at true electron tracks' },
-                'has_trk_front': { description: 'Track has at least one segment intersecting TT_Front surface', physics: 'Requires track segment at front of tracker to ensure well-measured momentum' },
-                'good_trkpid': { description: 'Track PID > 0.638 - strong particle identification criterion', physics: 'Particle ID selection to separate electrons from other particles, threshold optimized for signal efficiency' },
-                'good_trkqual': { description: 'Track quality > 0.2 - measure of tracking algorithm confidence', physics: 'Quality of fit metric from tracking algorithm, removes poorly reconstructed tracks' },
-                'within_t0': { description: 't0 at tracker mid (500 < t_0 < 1650 ns) - time window selection', physics: 'Timing gate at tracker middle, selects events within expected beam timing window' },
-                'within_t0err': { description: 't0 error < 0.9 ns - time measurement precision requirement', physics: 'Requires precise time measurement, removes events with poorly determined timing' },
-                'has_hits': { description: 'Minimum of 20 active hits in tracker - requires sufficient track information', physics: 'Minimum number of tracker hits ensures good track reconstruction quality' },
-                'within_lhr_maxl': { description: 'Loop helix maximum radius constraint (450 < R_max < 680 mm) - track geometry cut', physics: 'Curvature constraint on track fit, selects expected track radius for signal momentum range' },
-                'within_d0': { description: 'Distance of closest approach d_0 < 100 mm - impact parameter requirement', physics: 'Impact parameter cut, constrains track to originate from interaction vertex region' },
-                'within_pitch_angle': { description: 'Extrapolated pitch angle 0.5577 < tan(θ_Dip) < 1.0 - momentum direction cut', physics: 'Pitch angle selection ensures track has expected angular distribution for signal' },
-                'has_st': { description: 'Track has N_ST > 0 - intersects Stopping Target', physics: 'Track must pass through Stopping Target where muon originated' },
-                'no_opa': { description: 'Track avoids OPA (N_OPA == 0) - rejects tracks through outer proton absorber', physics: 'Removes tracks that pass through outer proton absorber, indicates non-signal background' },
-                'no_crv_veto': { description: 'No high-quality CRV coincidence (PEs>25, nHits≥15, span<175ns)', physics: 'Cosmic ray veto using Cosmic Ray Tracker, rejects events with cosmic hits' },
-                'crv_quality': { description: 'No CRV coincidence with start>429 and end<1700 ns within dt threshold', physics: 'CRV timing consistency check, removes poorly reconstructed cosmic hits' },
-                'no_crv_timewindow': { description: 'No CRV-track time veto: |Δt| ≥ 150 ns - cosmic ray rejection', physics: 'Requires minimum time separation between track and CRV hit, cosmic ray rejection' },
-                'pz_pt': { description: 'Track-level cut: 0.5 < p_z/p_t < 1.0 (forward going momentum)', physics: 'Momentum direction cut ensuring track is mostly forward-going, rejects wide-angle scatters' },
-                'triggers': { description: 'Event trigger requirement passed (trigger passed)', physics: 'Hardware/software trigger selection, ensures event came from expected trigger path' },
-                'within_mom_time': { description: '95 < momentum < 115 MeV/c - narrow momentum window for signal region', physics: 'Tight momentum window around expected signal value (104.8 MeV/c for mu→e), signal optimization' },
-                'within_mom_time_pos': { description: 't0 at tracker mid (0 < t_0 < 700 ns) - early time window for positrons', physics: 'Early timing window for positron signal search, different from electron window' },
-                'early_time': { description: 'Veto tracks with reflections - no loop helix fit requirement', physics: 'Removes tracks with loop-like topology indicating multiple scattering or background' },
-                'reflected': { description: 'Test cut - configuration dependent', physics: 'Placeholder or test cut, behavior depends on analysis configuration' }
-            };
-
-            // Use loaded metadata, fall back to hardcoded if not found
-            const finalMetadata = { ...fallbackDescriptions, ...cutMetadata };
-
-            try {
-                // Try to load prefixed CSV file first
-                let csvContent = null;
-                let filename = `${prefix}_cut_stats.csv`;
-                
-                const response = await fetch(filename);
-                if (!response.ok) {
-                    statusEl.innerHTML = 
-                        `<strong style="color: #f59e0b;">⚠ ${filename} not found</strong><br>Run analysis to generate cut statistics.`;
-                    statusEl.className = 'status-box warning';
-                    return;
-                }
-
-                csvContent = await response.text();
-                const csv = csvContent;
-                const lines = csv.trim().split('\n');
-                
-                if (lines.length < 2) {
-                    throw new Error('CSV file is empty');
-                }
-
-                const headers = lines[0].split(',').map(h => h.trim());
-                const rows = lines.slice(1).map(line => line.split(',').map(cell => cell.trim()));
-
-                // Create table
-                let html = '<table><thead><tr>';
-                headers.forEach(header => {
-                    html += `<th>${header}</th>`;
-                });
-                html += '</tr></thead><tbody>';
-
-                rows.forEach((row, rowIndex) => {
-                    const cutName = row[0];
-                    const metadata = finalMetadata[cutName] || { description: 'No description available', physics: '' };
-                    const detailsId = `details-${prefix}-${cutName}`;
-                    
-                    // Main row with expand button
-                    html += '<tr class="cut-row" data-cut="' + cutName + '">';
-                    html += `<td><button class="expand-btn" onclick="toggleCutDetails('${detailsId}', this)">▼</button> ${cutName}</td>`;
-                    row.slice(1).forEach(cell => {
-                        html += `<td>${cell}</td>`;
-                    });
-                    html += '</tr>';
-                    
-                    // Details row (hidden by default)
-                    let detailsHtml = `<strong>📋 Description:</strong><br>${metadata.description}`;
-                    if (metadata.physics) {
-                        detailsHtml += `<br><br><strong>🔬 Physics Rationale:</strong><br>${metadata.physics}`;
-                    }
-                    
-                    html += `<tr class="details-row" id="${detailsId}">
-                        <td colspan="${headers.length}">
-                            <div class="cut-details">
-                                ${detailsHtml}
-                            </div>
-                        </td>
-                    </tr>`;
-                });
-
-                html += '</tbody></table>';
-
-                containerEl.innerHTML = html;
-                statusEl.innerHTML = 
-                    `<strong style="color: #22c55e;">✓ Loaded ${rows.length} rows from ${filename}</strong> (Click cut names to expand)`;
-                statusEl.className = 'status-box success';
-
-            } catch (error) {
-                console.error(`Error loading cut stats for ${prefix}:`, error);
-                statusEl.innerHTML = 
-                    `<strong style="color: #ef4444;">✗ Error loading cut statistics</strong><br>${error.message}`;
-                statusEl.className = 'status-box';
-                statusEl.style.borderLeftColor = '#ef4444';
-            }
-        }
-
-        // Toggle cut details visibility
-        window.toggleCutDetails = function(detailsId, btn) {
-            const detailsRow = document.getElementById(detailsId);
-            
-            if (detailsRow) {
-                detailsRow.classList.toggle('show');
-                btn.classList.toggle('expanded');
-            }
-        };
-
-        // Load plots for eminus or eplus
-        async function loadPlots(prefix) {
-            const optimizationGalleryId = `optimization-gallery-${prefix}`;
-            const distributionsGalleryId = `distributions-gallery-${prefix}`;
-            
-            const optimizationGallery = document.getElementById(optimizationGalleryId);
-            const distributionsGallery = document.getElementById(distributionsGalleryId);
-
-            if (!optimizationGallery || !distributionsGallery) {
-                console.log(`Gallery elements not found for prefix: ${prefix}`);
-                return;
-            }
-
-            // Base plot names (will be tried with prefix)
-            const basePlots = ['recomom_selection.png', 'DT_selection.png', 'nST_selection.png', 'nOPA_selection.png', 
-                                       'rmax_selection.png', 'd0_selection.png', 'tanDip_selection.png', 'trkqual_selection.png',
-                                       'trkpid_selection.png', 't0err_selection.png', 'nactive_selection.png', 'time_selection.png',
-                                       'truemom_selection.png'];
-            
-            const baseDistributions = [
-                { name: '1D_Mom_selected.png', title: '1D Momentum Distribution' },
-                { name: '1D_Time_selected.png', title: '1D Time Distribution' },
-                { name: '2D_selected.png', title: '2D Distribution' }
+            const n = s.normalization, ss = s.signal_set || {};
+            const cl = s.confidence_level || (s.pyfitter_limits || {}).confidence_level || 0.9;
+            const bkg = Object.entries(s.background_by_process || {}).map(([k, v]) => `${esc(k)} ${v}`).join(', ') || 'none';
+            const rows = [
+                ['Window', `${s.window.mom[0]}&ndash;${s.window.mom[1]} MeV/c, ${s.window.time[0]}&ndash;${s.window.time[1]} ns`],
+                ['Observed in window', s.n_observed],
+                ['Background in window (MC truth, not rescaled)', `${s.background_expected} (${bkg})`],
+                ['Signal tracks in window', s.signal_selected],
+                ['Signal efficiency (incl. reco)', `${s.signal_efficiency.toFixed(4)} &plusmn; ${s.signal_efficiency_stat_err.toFixed(4)}`],
+                ['Stopped muons', sci(n.stopped_muons)],
+                ['Single-event sensitivity', sci(s.single_event_sensitivity)],
+                [`<b>Expected ${Math.round(cl * 100)}% CL limit on R<sub>&mu;e</sub></b>`, `<b>${sci(s.expected_limit_rmue)}</b>`],
+                [`Observed ${Math.round(cl * 100)}% CL limit on R<sub>&mu;e</sub>`, sci(s.observed_limit_rmue)],
             ];
-            
-            console.log(`Loading optimization plots for ${prefix}:`, basePlots);
-            console.log(`Loading distribution plots for ${prefix}:`, baseDistributions.map(p => p.name));
+            if (ss.rmue_injected) rows.push(['Injected R<sub>&mu;e</sub> (this pseudo-experiment)', sci(ss.rmue_injected)]);
+            document.getElementById(`sensitivity-container-${prefix}`).innerHTML = table(['Quantity', 'Value'], rows)
+                + `<p class="muted" style="margin-top: 10px;">${esc(s.method)}. Normalisation: ${esc(n.mds)} manifest <code>${esc(n.manifest_sam_file)}</code>, `
+                + `capture rate ${n.captures_per_stopped_muon}, signal set ${esc(ss.label)} pe ${esc(ss.pe)}.</p>`;
+            setStatus(id, 'success', 'Sensitivity loaded');
+        }
 
-            // Load optimization plots
-            for (const plot of basePlots) {
-                const fileName = prefix + '_' + plot;
-                
+        async function loadValidation() {
+            const v = await getJSON('validation_eminus.json');
+            if (!v) { setStatus('validation-status', 'warning', 'No validation for this run (MDS pseudo-experiments, e<sup>&minus;</sup> only).'); return; }
+            const cls = v.verdict === 'PASS' ? 'success' : v.verdict === 'WARN' ? 'warning' : 'fail';
+            setStatus('validation-status', cls, `Verdict: <span class="verdict ${v.verdict}">${v.verdict}</span> &nbsp; pyCount, RooCount and Shape on the same files, same run1a selection`);
+            let h = table(['Check', 'Status', 'Detail'], v.checks.map(c => [esc(c.check), `<span class="verdict ${c.status}">${c.status}</span>`, esc(c.detail)]));
+            for (const [region, box] of Object.entries(v.regions)) {
+                const y = v.yields[region], cols = Object.keys(y);
+                const procs = Object.keys(y[cols[0]]).filter(p => p !== 'total' && cols.some(c => y[c][p]));
+                h += `<h3 style="margin: 25px 0 10px;">Tracks per MC process: ${esc(region.replace('_', ' '))} <span class="muted">(${box.mom[0]}&ndash;${box.mom[1]} MeV/c, ${box.time[0]}&ndash;${box.time[1]} ns)</span></h3>`;
+                h += table(['Process', ...cols.map(esc)], [...procs.map(p => [esc(p), ...cols.map(c => y[c][p])]), ['<i>total</i>', ...cols.map(c => y[c].total)]]);
+            }
+            if (v.shape_fit) {
+                const rows = Object.entries(v.shape_fit.components).filter(([, c]) => 'fit_range' in c).map(([k, c]) =>
+                    [esc(k), `${c.fit_range.toFixed(1)} &plusmn; ${c.fit_range_err.toFixed(1)}`, c.mc_fit_range,
+                     `${c.signal_window.toFixed(2)} &plusmn; ${c.signal_window_err.toFixed(2)}`, c.mc_signal_window]);
+                h += `<h3 style="margin: 25px 0 10px;">Shape 2D fit vs MC truth <span class="muted">(status ${v.shape_fit.status}, significance ${v.shape_fit.significance.toFixed(1)}&sigma;)</span></h3>`;
+                h += table(['Component', 'Fit (fit range)', 'MC (fit range)', 'Fit (signal window)', 'MC (signal window)'], rows);
+            }
+            document.getElementById('validation-container').innerHTML = h;
+            addPlots('validation-plots', [['shape_fit_mom_eminus.png', 'Shape fit, momentum projection'], ['shape_fit_time_eminus.png', 'Shape fit, time projection']]);
+        }
+
+        async function loadCounts(prefix) {
+            const pc = await getJSON(`${prefix}_process_counts.json`);
+            if (!pc) return;
+            const procs = Object.keys(pc.selected).sort((a, b) => pc.selected[b] - pc.selected[a]);
+            const w = pc.signal_window;
+            document.getElementById(`counts-container-${prefix}`).innerHTML =
+                `<h4 style="margin-bottom: 10px;">Selected tracks by MC process <span class="muted">(${esc(pc.labels)})</span></h4>`
+                + table(['Process', 'Selected', `Signal window (${w.mom[0]}&ndash;${w.mom[1]} MeV/c, ${w.time[0]}&ndash;${w.time[1]} ns)`],
+                        [...procs.map(p => [esc(p), pc.selected[p], pc.in_signal_window[p] || 0]), ['<i>total</i>', pc.selected_total, pc.in_signal_window_total]])
+                + '<div style="height: 20px;"></div>';
+        }
+
+        function parseCSV(text) {
+            const rows = [];
+            for (const line of text.trim().split('\n')) {
+                const cells = []; let cur = '', q = false;
+                for (const ch of line) {
+                    if (ch === '"') q = !q; else if (ch === ',' && !q) { cells.push(cur); cur = ''; } else cur += ch;
+                }
+                cells.push(cur); rows.push(cells.map(c => c.trim()));
+            }
+            return rows;
+        }
+
+        async function loadCutStats(prefix) {
+            const r = await fetch(`${prefix}_cut_stats.csv`);
+            if (!r.ok) { setStatus(`table-status-${prefix}`, 'warning', `No cut flow (${prefix}_cut_stats.csv): this channel was not run.`); return; }
+            const [header, ...rows] = parseCSV(await r.text());
+            const idx = name => header.indexOf(name);
+            const out = rows.map(c => [esc(c[idx('Cut')]), Number(c[idx('Events Passing')]),
+                                       Number(c[idx('Relative [%]')]).toFixed(2), Number(c[idx('Absolute [%]')]).toFixed(3), esc(c[idx('Description')])]);
+            document.getElementById(`table-container-${prefix}`).innerHTML =
+                table(['Cut', 'Events passing', 'Relative [%]', 'Absolute [%]', 'Definition (from the code)'], out);
+            setStatus(`table-status-${prefix}`, 'success', `Cut flow: ${rows.length} rows (events with at least one track passing)`);
+        }
+
+        function addPlots(galleryId, plots) {
+            const gallery = document.getElementById(galleryId);
+            for (const [file, title] of plots) {
                 const card = document.createElement('div');
                 card.className = 'plot-card';
-                card.style.opacity = '0.5';  // Initially dim
-                
-                card.innerHTML = `
-                    <img src="${fileName}" alt="${plot}" style="width: 100%; height: 300px; object-fit: contain; background: #f0f0f0;">
-                    <div class="plot-title">${plot}</div>
-                    <a href="${fileName}" class="plot-link" download>↓ Download PNG</a>
-                `;
-                
-                // Check if image loads
-                const img = card.querySelector('img');
-                img.onload = () => {
-                    card.style.opacity = '1';
-                    console.log(`✓ Loaded optimization plot: ${fileName}`);
-                };
-                img.onerror = () => {
-                    console.log(`✗ Failed to load optimization plot: ${fileName}`);
-                    card.remove();
-                };
-                
-                optimizationGallery.appendChild(card);
-            }
-
-            // Load distribution plots
-            for (const plot of baseDistributions) {
-                const fileName = prefix + '_' + plot.name;
-                
-                const card = document.createElement('div');
-                card.className = 'plot-card';
-                card.style.opacity = '0.5';  // Initially dim
-                
-                card.innerHTML = `
-                    <img src="${fileName}" alt="${plot.name}" style="width: 100%; height: 300px; object-fit: contain; background: #f0f0f0;">
-                    <div class="plot-title">${plot.title}</div>
-                    <a href="${fileName}" class="plot-link" download>↓ Download PNG</a>
-                `;
-                
-                // Check if image loads
-                const img = card.querySelector('img');
-                img.onload = () => {
-                    card.style.opacity = '1';
-                    console.log(`✓ Loaded distribution plot: ${fileName}`);
-                };
-                img.onerror = () => {
-                    console.log(`✗ Failed to load distribution plot: ${fileName}`);
-                    card.remove();
-                };
-                
-                distributionsGallery.appendChild(card);
-            }
-
-            // Add empty message check after a delay
-            setTimeout(() => {
-                if (optimizationGallery.children.length === 0) {
-                    optimizationGallery.innerHTML = '<div class="empty-message">No optimization plots found. Run analysis to generate plots.</div>';
-                }
-                if (distributionsGallery.children.length === 0) {
-                    distributionsGallery.innerHTML = '<div class="empty-message">No distribution plots found. Run analysis to generate plots.</div>';
-                }
-                console.log(`${prefix} - Optimization gallery has ${optimizationGallery.children.length} plots`);
-                console.log(`${prefix} - Distribution gallery has ${distributionsGallery.children.length} plots`);
-            }, 2000);
-        }
-
-        // Load yields data
-        async function loadYields(prefix) {
-            const containerId = `yields-container-${prefix}`;
-            const containerEl = document.getElementById(containerId);
-
-            if (!containerEl) {
-                console.log(`Yields container not found for prefix: ${prefix}`);
-                return;
-            }
-
-            try {
-                const filename = `${prefix}_yields.json`;
-                const response = await fetch(filename);
-                
-                if (!response.ok) {
-                    containerEl.innerHTML = `<p style="color: #f59e0b; font-style: italic;">⚠ ${filename} not found. Run analysis to generate yields data.</p>`;
-                    return;
-                }
-
-                const yields = await response.json();
-
-                // Create formatted display
-                let html = '<h4 style="color: #667eea; margin-bottom: 15px; margin-top: 0;">📊 MC Truth Yields</h4>';
-                html += '<table style="width: 100%; border-collapse: collapse;">';
-                html += '<thead><tr style="background: #f0f0f0;"><th style="padding: 10px; text-align: left; border-bottom: 2px solid #667eea;">Channel</th><th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">Events</th><th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">Post-Selection</th></tr></thead>';
-                html += '<tbody>';
-
-                const channels = [
-                    { key: 'dio', label: 'DIO', color: '#3b82f6' },
-                    { key: 'cep', label: 'CEP', color: '#ef4444' },
-                    { key: 'cem', label: 'CEM', color: '#f59e0b' },
-                    { key: 'ipa', label: 'IPA DIO', color: '#8b5cf6' },
-                    { key: 'erpc', label: 'eRPC', color: '#14b8a6' },
-                    { key: 'irpc', label: 'iRPC', color: '#06b6d4' },
-                    { key: 'ermc', label: 'eRMC', color: '#ec4899' },
-                    { key: 'irmc', label: 'iRMC', color: '#f97316' },
-                    { key: 'cosmic', label: 'Cosmic', color: '#71717a' },
-                    { key: 'others', label: 'Others', color: '#a1a1aa' }
-                ];
-
-                channels.forEach(channel => {
-                    const value = yields[channel.key] || 0;
-                    html += `<tr style="border-bottom: 1px solid #e5e7eb;">
-                        <td style="padding: 10px; font-weight: 500; color: ${channel.color};">● ${channel.label}</td>
-                        <td style="padding: 10px; text-align: right; color: #333;">${value}</td>
-                        <td style="padding: 10px; text-align: right; color: #666; font-size: 0.9em;">–</td>
-                    </tr>`;
-                });
-
-                html += '</tbody></table>';
-
-                // Add reconstructed and signal region counts
-                html += '<div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">';
-                html += '<h4 style="color: #667eea; margin-bottom: 10px; margin-top: 0;">📈 Selection Results</h4>';
-                html += '<table style="width: 100%; border-collapse: collapse;">';
-                html += '<tbody>';
-                
-                const selectionChannels = [
-                    { key: 'signal_reco', label: 'Reconstructed Signal', color: '#ef4444' },
-                    { key: 'background_reco', label: 'Reconstructed Background', color: '#3b82f6' },
-                    { key: 'signal_sr', label: 'Signal Region Signal', color: '#dc2626' },
-                    { key: 'background_sr', label: 'Signal Region Background', color: '#1d4ed8' }
-                ];
-
-                selectionChannels.forEach(channel => {
-                    const value = yields[channel.key] !== undefined ? yields[channel.key] : 'N/A';
-                    const displayValue = typeof value === 'number' ? value.toFixed(1) : value;
-                    html += `<tr style="border-bottom: 1px solid #e5e7eb;">
-                        <td style="padding: 10px; font-weight: 500; color: ${channel.color};">● ${channel.label}</td>
-                        <td style="padding: 10px; text-align: right; color: #333;">${displayValue}</td>
-                    </tr>`;
-                });
-
-                html += '</tbody></table>';
-                html += '</div>';
-
-                containerEl.innerHTML = html;
-
-            } catch (error) {
-                console.error(`Error loading yields for ${prefix}:`, error);
-                containerEl.innerHTML = `<p style="color: #ef4444;">✗ Error loading yields: ${error.message}</p>`;
+                card.innerHTML = `<img src="${file}" alt="${esc(title)}" style="width: 100%; height: 320px; object-fit: contain; background: #fff;"><div class="plot-title">${esc(title)}</div>`;
+                card.querySelector('img').onerror = () => card.remove();
+                gallery.appendChild(card);
             }
         }
 
-        // Load and display normalization data
-        async function loadNormalization() {
-            try {
-                // Load normalization data
-                const normResponse = await fetch('normalization_ensembleMDS3c.json');
-                if (!normResponse.ok) {
-                    document.getElementById('normalization-full-container').innerHTML = 
-                        `<p style="color: #f59e0b; font-style: italic;">⚠ Normalization data not found.</p>`;
-                    return;
-                }
-                const normData = await normResponse.json();
-                console.log('Loaded normalization data:', normData);
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.section).classList.add('active');
+        }));
 
-                // Load analysis config for file scaling
-                const configResponse = await fetch('analysis_config.json');
-                const configData = configResponse.ok ? await configResponse.json() : {};
-
-                // Create full sample normalization table
-                let fullHtml = '<h3 style="color: #667eea; margin-bottom: 15px;">📊 Full Sample Normalization</h3>';
-                fullHtml += '<table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">';
-                fullHtml += '<thead><tr style="background: #f0f0f0;">';
-                fullHtml += '<th style="padding: 12px; text-align: left; border-bottom: 2px solid #667eea; font-weight: 600;">Parameter</th>';
-                fullHtml += '<th style="padding: 12px; text-align: right; border-bottom: 2px solid #667eea; font-weight: 600;">Value</th>';
-                fullHtml += '</tr></thead><tbody>';
-
-                // Display key normalization parameters
-                const displayParams = [
-                    { key: 'njobs', label: 'Number of Jobs' },
-                    { key: 'beam_npot', label: 'Beam NPOT', format: '3.2e' },
-                    { key: 'beam_nmot', label: 'Beam NMOT', format: '3.2e' },
-                    { key: 'beam_livetime', label: 'Beam Livetime (s)', format: '.2e' },
-                    { key: 'beam_onspill_time', label: 'On-Spill Time (s)', format: '.2e' },
-                    { key: 'dio_events', label: 'DIO Expected Events', format: '.2e' },
-                    { key: 'ipa_events', label: 'IPA Expected Events', format: '.2e' },
-                    { key: 'rpc_internal_events', label: 'RPC Internal Expected Events', format: '.2e' },
-                    { key: 'rpc_external_events', label: 'RPC External Expected Events', format: '.2e' },
-                    { key: 'rmc_internal_events', label: 'RMC Internal Expected Events', format: '.2e' },
-                    { key: 'rmc_external_events', label: 'RMC External Expected Events', format: '.2e' }
-                ];
-
-                displayParams.forEach((param, idx) => {
-                    if (normData[param.key] !== undefined) {
-                        let value = normData[param.key];
-                        if (param.format && typeof value === 'number') {
-                            if (param.format === '3.2e') {
-                                value = value.toExponential(2);
-                            } else if (param.format === '.2e') {
-                                value = value.toExponential(2);
-                            }
-                        }
-                        fullHtml += `<tr style="border-bottom: 1px solid #e5e7eb; ${idx % 2 === 0 ? 'background: #fafbfc;' : ''}">
-                            <td style="padding: 12px; font-weight: 500;">${param.label}</td>
-                            <td style="padding: 12px; text-align: right; font-family: 'Courier New', monospace; color: #333;">${value}</td>
-                        </tr>`;
-                    }
-                });
-
-                fullHtml += '</tbody></table>';
-                document.getElementById('normalization-full-container').innerHTML = fullHtml;
-
-                // Create scaling factors table
-                let scalingHtml = '<h3 style="color: #667eea; margin-bottom: 15px;">⚖️ This Run: Scaling Factors & Efficiencies</h3>';
-                scalingHtml += '<table style="width: 100%; border-collapse: collapse;">';
-                scalingHtml += '<thead><tr style="background: #f0f0f0;">';
-                scalingHtml += '<th style="padding: 12px; text-align: left; border-bottom: 2px solid #667eea; font-weight: 600;">Parameter</th>';
-                scalingHtml += '<th style="padding: 12px; text-align: right; border-bottom: 2px solid #667eea; font-weight: 600;">Value</th>';
-                scalingHtml += '</tr></thead><tbody>';
-
-                // Calculate scaling factors
-                console.log('Config data:', configData);
-                const nfiles_used = configData.nfiles_used !== undefined ? configData.nfiles_used : normData.nfiles_used;
-                const nfiles_total = configData.nfiles_total !== undefined ? configData.nfiles_total : normData.nfiles_total;
-                const filesFrac = nfiles_used / nfiles_total;
-                const npotUsed = normData.beam_npot * filesFrac;
-                const nmotUsed = normData.beam_nmot * filesFrac;
-                const onspillUsed = normData.beam_onspill_time * filesFrac;
-                const livetimeUsed = normData.beam_livetime * filesFrac;
-                console.log('Using from config - nfiles_used:', nfiles_used, 'nfiles_total:', nfiles_total, 'filesFrac:', filesFrac);
-                console.log('After scaling calc - npotUsed:', npotUsed, 'nmotUsed:', nmotUsed);
-                console.log('signal_eff_eminus:', normData.signal_eff_eminus, 'signal_eff_eplus:', normData.signal_eff_eplus);
-
-                const scalingParams = [
-                    { label: 'Files Used / Total', value: `${nfiles_used} / ${nfiles_total}`, color: '#3b82f6' },
-                    { label: 'File Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#3b82f6' },
-                    { label: 'NPOT Used', value: npotUsed ? npotUsed.toExponential(2) : 'N/A', color: '#f59e0b' },
-                    { label: 'NPOT Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#f59e0b' },
-                    { label: 'NMOT Used', value: nmotUsed ? nmotUsed.toExponential(2) : 'N/A', color: '#8b5cf6' },
-                    { label: 'NMOT Fraction', value: filesFrac ? filesFrac.toExponential(4) : 'N/A', color: '#8b5cf6' },
-                    { label: 'On-Spill Time Used (s)', value: onspillUsed ? onspillUsed.toExponential(2) : 'N/A', color: '#10b981' },
-                    { label: 'Beam Livetime Used (s)', value: livetimeUsed ? livetimeUsed.toExponential(2) : 'N/A', color: '#06b6d4' },
-                    { label: 'Signal Efficiency (e⁻)', value: normData.signal_eff_eminus ? `${(normData.signal_eff_eminus * 100).toFixed(1)}%` : 'N/A', color: '#ef4444' },
-                    { label: 'Signal Efficiency (e⁺)', value: normData.signal_eff_eplus ? `${(normData.signal_eff_eplus * 100).toFixed(1)}%` : 'N/A', color: '#06b6d4' }
-                ];
-
-                scalingParams.forEach((param, idx) => {
-                    scalingHtml += `<tr style="border-bottom: 1px solid #e5e7eb; ${idx % 2 === 0 ? 'background: #fafbfc;' : ''}">
-                        <td style="padding: 12px; font-weight: 500; color: ${param.color};">● ${param.label}</td>
-                        <td style="padding: 12px; text-align: right; font-family: 'Courier New', monospace; color: #333;">${param.value}</td>
-                    </tr>`;
-                });
-
-                scalingHtml += '</tbody></table>';
-                scalingHtml += '<div style="margin-top: 15px; padding: 12px; background: #fffbea; border-left: 4px solid #f59e0b; border-radius: 4px; color: #666; font-size: 0.95em;">';
-                scalingHtml += '<strong>ℹ️ Note:</strong> Exposure scaling factor = 0.61 × file_fraction × signal_efficiency. This is applied to expected background event counts to scale them to the actual analysis sample size.';
-                scalingHtml += '</div>';
-                document.getElementById('normalization-scaling-container').innerHTML = scalingHtml;
-
-            } catch (error) {
-                console.error('Error loading normalization:', error);
-                document.getElementById('normalization-full-container').innerHTML = 
-                    `<p style="color: #ef4444;">✗ Error loading normalization data: ${error.message}</p>`;
+        document.addEventListener('DOMContentLoaded', async () => {
+            const run = await getJSON('run.json');
+            loadOverview(run);
+            for (const p of PREFIXES) {
+                loadSensitivity(p, run);
+                loadCounts(p);
+                loadCutStats(p);
+                addPlots(`distributions-gallery-${p}`, [[`${p}_1D_Mom_selected.png`, 'Momentum at TT_Front'],
+                                                       [`${p}_1D_Time_selected.png`, 'Time at TT_Front'], [`${p}_2D_selected.png`, 'Momentum vs time']]);
             }
-        }
-
-        // Initialize on load
-        window.addEventListener('load', () => {
-            const now = new Date();
-            document.getElementById('timestamp').textContent = now.toLocaleString();
-            
-            // Load data for both eminus and eplus
-            loadSensitivityResults('eminus');
-            loadSensitivityResults('eplus');
-            loadCutStats('eminus');
-            loadCutStats('eplus');
-            loadYields('eminus');
-            loadYields('eplus');
-            loadPlots('eminus');
-            loadPlots('eplus');
-            loadNormalization();
+            loadValidation();
         });
     </script>
 </body>

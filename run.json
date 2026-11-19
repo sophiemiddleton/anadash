@@ -1,0 +1,39 @@
+{
+ "mode": "mds",
+ "dataset": "MDS4b_CeMLeadingLog_1e-13_pe1",
+ "signal_set": {
+  "file_list_given": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt",
+  "mixed_files": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt",
+  "n_files": 8,
+  "signal_set_dir": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13",
+  "label": "CeMLeadingLog_1e-13",
+  "pe": 1,
+  "env_file": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/signal.env",
+  "signal_sample": "CeMLeadingLogOnSpill",
+  "signal_process": "CE",
+  "rmue_injected": 1e-13,
+  "onspill_s": 800801.0,
+  "livetime_s": 2479260.0,
+  "recoeff": 0.4009075,
+  "nsig_injected": 138,
+  "mds": "MDS4b",
+  "mds_dataset": "nts.mu2e.ensembleNtuple.MDC2025-001_MDS4b.root"
+ },
+ "location": "local",
+ "files_used": 8,
+ "files_total": 8,
+ "run_dir": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1",
+ "date": "2026-11-19T10:14:32",
+ "git_commit": "56ce4a8b2202ebbb1c78d295a10e38b5baf7c0bf",
+ "git_dirty": true,
+ "signs": {
+  "minus": {
+   "profile": "nominal_minus",
+   "cutset": "run1a",
+   "status": "success",
+   "git": "56ce4a8b2202ebbb1c78d295a10e38b5baf7c0bf",
+   "dirty": true,
+   "validation": "WARN"
+  }
+ }
+}

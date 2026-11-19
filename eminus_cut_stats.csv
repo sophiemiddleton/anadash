@@ -1,18 +1,24 @@
 Cut,Group,Events Passing,Absolute [%],Relative [%],Description
-No cuts,N/A,864042,100.0,100.0,No selection applied
-is_reco_electron,,590435,68.33406246455613,68.33406246455613,Tracks are assumed to be electrons (trk)
-has_downstream,,391913,45.35809601848058,66.3769932338022,Downstream tracks (p_z > 0 through tracker)
-has_trk_front_seg,,388602,44.97489705361545,99.15516964224203,Track has >=1 segment intersecting TT_Front
-good_trkpid,,156388,18.09958312211675,40.24374552884442,Track PID > 0.638
-good_trkqual,,127995,14.81351600963842,81.84451492441876,Track quality  > 0.2
-within_t0err,,127894,14.80182676305087,99.9210906676042,t0err < 0.9
-has_hits,,124920,14.457630531849148,97.67463680860713,Minimum of 20 active hits in the tracker
-has_st,,38003,4.398281565016515,30.421869996797952,has Nst > 0
-no_opa,,37128,4.2970133396293235,97.69755019340577,has N_opa == 0
-no_crv_quality,,35835,4.147367836285736,96.5174531351002,"No high-quality CRV coincidence (PEs>25, nHits>=15, span<175ns)"
-no_crv_timewindow,,35801,4.143432842384977,99.90512069206083,No CRV coincidence with start>429 and end<1700 within dt threshold
-no_crv_veto,,35789,4.142044021008238,99.96648138320158,No crv-trk veto: |dt| >= 150 ns
-pz_over_pt,,33303,3.8543265257938852,93.05373159350638,Track-level cut: 0.5 < pz/pt < 1.0 (pt = transverse mag)
-good_trigger,,19943,2.308105393024876,59.88349397952136,trigger passed
-in_mom_range,,7097,0.8213721092261719,35.586421300707016, 95 < mom < 115
-within_t0,,6297,0.7287840174435966,88.72763139354657,t0 at tracker mid (500 < t_0 < 1650 ns)
+No cuts,N/A,1272050,100.0,100.0,No selection applied
+has_a_track,,661053,51.96753272277033,51.96753272277033,Event has at least one reconstructed track (ntracks > 0)
+is_good_track,,659080,51.812428756731265,99.7015367905448,Track quality: status >= 0 and goodfit != 0
+has_trk_front_seg,,641167,50.40422939349868,97.28212053165018,Track has >=1 segment intersecting TT_Front
+is_reco_electron_or_positron,,620836,48.805943162611534,96.82906325497102,Tracks are assumed to be electrons or positrons (FitPDG = +-11)
+has_downstream,,586925,46.14008883298612,94.53784896494403,Downstream tracks (earliest TT_Front segment p_z > 0)
+charge_selection,,385896,30.336543374867343,65.74877539719725,PDG = 11
+or_trigger,,208145,16.362957430918595,53.93810767667973,OR trigger selection (CPR | APR)
+upstream_veto,,192146,15.105223851263707,92.3135314324149,Upstream timing veto: no good upstream track 40.0-110.0 ns earlier
+no_multi_trk_veto,,174529,13.720294013600096,90.83145108407149,No coincident multi-track: |dt| >= 150.0 ns between downstream e/e+ tracks
+good_trkpid,,100183,7.875712432687394,57.401921743664374,Track PID > 0.574 and event has calorimeter cluster energy > 0
+pz_over_pt,,71147,5.593097755591368,71.0170388189613,0.56 < tanDip < 0.8787 at TT_Front
+within_d0,,67680,5.320545576038678,95.12699059693311,-60.0 < signed d0 < 94.0 mm
+st_boundary,,66843,5.254746275696711,98.76329787234043,STBoundary > 0
+has_st,,64213,5.047993396485987,96.065406998489,has Nst > 0
+no_opa,,63874,5.02134350064856,99.4720695186333,has N_opa == 0
+no_tsda,,63688,5.0067214339059,99.70880170335347,has N_tsda == 0
+good_trkqual,,54479,4.282771903620141,85.54044718000252,Track quality > 0.145
+has_hits,,54228,4.263039974843756,99.53927201306925,Minimum of 17 active hits in the tracker
+within_t0err,,54228,4.263039974843756,100.0,t0err < 0.81 at TT_Mid
+no_crv_veto,,53952,4.241342714515939,99.49103784023013,No crv-trk veto: 0.0 < dt < 150.0 ns (asymmetric)
+in_mom_range,,543,0.042687001297118825,1.0064501779359432,100.0 < mom < 110.0 MeV/c
+within_t0_475,,219,0.017216304390550687,40.331491712707184,475.0 < t_0 < 1650.0 ns

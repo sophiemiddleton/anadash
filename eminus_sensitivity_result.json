@@ -1,14 +1,172 @@
 {
-  "background_count": 27.0,
-  "exposure": 3873991934988000.0,
-  "efficiency": 0.12,
-  "confidence_level": 0.9,
-  "s_up_numeric_events": 8.125711884147599,
-  "s_up_table_events": 10.259,
-  "br_upper_limit_numeric": 1.7479196352906125e-14,
-  "br_upper_limit_table": 2.2068106516832873e-14,
-  "fc_low_br": 0.0,
-  "fc_high_br": 2.1513381574345415e-14,
-  "required_signal_5sigma": 29.875,
-  "note": "Divide s_up values by (exposure * efficiency) to get BR upper limit"
+  "method": "MDS pseudo-experiment, pyfitter counting_stats empirical",
+  "tag": "MDS4b_CeMLeadingLog_1e-13_pe1_eminus",
+  "run_dir": ".",
+  "signal_set": {
+    "file_list_given": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt",
+    "mixed_files": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt",
+    "n_files": 8,
+    "signal_set_dir": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13",
+    "label": "CeMLeadingLog_1e-13",
+    "pe": 1,
+    "env_file": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/signal.env",
+    "signal_sample": "CeMLeadingLogOnSpill",
+    "signal_process": "CE",
+    "rmue_injected": 1e-13,
+    "onspill_s": 800801.0,
+    "livetime_s": 2479260.0,
+    "recoeff": 0.4009075,
+    "nsig_injected": 138,
+    "mds": "MDS4b",
+    "mds_dataset": "nts.mu2e.ensembleNtuple.MDC2025-001_MDS4b.root"
+  },
+  "normalization": {
+    "manifest": "/pnfs/mu2e/persistent/datasets/phy-etc/cnf/mu2e/MDS4b-info/MDC2025ax/txt/b3/a2/cnf.mu2e.MDS4b-info.MDC2025ax.0.txt",
+    "manifest_sam_file": "cnf.mu2e.MDS4b-info.MDC2025ax.0.txt",
+    "manifest_sha256": "faeac7064502e73ba19d3e054657b6e70b8b8d41a803b80f28cd7536ee54e2ff",
+    "mds": "MDS4b",
+    "mds_dataset": "nts.mu2e.ensembleNtuple.MDC2025-001_MDS4b.root",
+    "beam_nmot": 4.09e+16,
+    "beam_onspill_time": 5720000.0,
+    "onspill_s": 800801.0,
+    "stopped_muons": 5726007150349650.0,
+    "captures_per_stopped_muon": 0.609,
+    "production_constants": "/cvmfs/mu2e.opensciencegrid.org/Musings/SimJob/MDC2025ax/Production/JobConfig/ensemble/python/constants.py",
+    "expected_injected_signal": 139.8019919881941,
+    "nsig_injected": 138,
+    "injection_poisson_p": 0.9233951111962406
+  },
+  "processed": {
+    "units_planned": 29,
+    "units_ok": 29,
+    "units_missing": [],
+    "n_events": 1272050,
+    "n_events_expected": 1272050,
+    "chunk_size": 50000
+  },
+  "window": {
+    "mom": [
+      103.34,
+      104.74
+    ],
+    "time": [
+      640.0,
+      1650.0
+    ]
+  },
+  "window_counts": {
+    "FlatEplus": 0,
+    "FlatEminus": 0,
+    "CEP": 0,
+    "CE": 42,
+    "RMC": 0,
+    "RPC": 0,
+    "Cosmic": 2,
+    "IPA": 0,
+    "DIO": 0,
+    "Other": 0
+  },
+  "n_observed": 44,
+  "background_expected": 2.0,
+  "background_by_process": {
+    "Cosmic": 2
+  },
+  "signal_selected": 42,
+  "selection_efficiency": 0.30434782608695654,
+  "signal_efficiency": 0.12201532608695653,
+  "signal_efficiency_stat_err": 0.015703115066001663,
+  "single_event_sensitivity": 2.3502628531872106e-15,
+  "expected_limit_events": 3.9607286014069962,
+  "expected_limit_rmue": 9.308753303442997e-15,
+  "expected_limit_rmue_band68": [
+    7.136316007288186e-15,
+    1.1416675389494076e-14
+  ],
+  "asimov_limit_rmue": 7.928723734828916e-15,
+  "observed_limit_rmue": 1.2179867389012543e-13,
+  "pyfitter": {
+    "dir": "/exp/mu2e/app/users/sophie/pyfitter",
+    "commit": "b2ae48bf8d11a8707debdb9aa6ded2217dd7ff8c",
+    "modified": false
+  },
+  "pyfitter_limits": {
+    "card": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1/cutcount/eminus_count_card.yaml",
+    "method": "empirical",
+    "confidence_level": 0.9,
+    "signal_yield": 42.548432344232985,
+    "background_yield": 2.0,
+    "nuisances": [
+      "lumi",
+      "ceHN"
+    ],
+    "n_muons": 5726007150349650.0,
+    "capture_rate": 0.609,
+    "signal_efficiency": 0.12201532608695653,
+    "single_event_sensitivity": 2.3502628531872106e-15,
+    "asimov": {
+      "band_-2": {
+        "mu": 0.034292344612407606,
+        "events": 1.4590855046661475,
+        "rmue": 3.429234461240761e-15
+      },
+      "band_-1": {
+        "mu": 0.050100688247201895,
+        "events": 2.1317057442855787,
+        "rmue": 5.01006882472019e-15
+      },
+      "band_+0": {
+        "mu": 0.07928723734828916,
+        "events": 3.373547654074824,
+        "rmue": 7.928723734828916e-15
+      },
+      "band_+1": {
+        "mu": 0.13176470754604497,
+        "events": 5.60638174438054,
+        "rmue": 1.3176470754604499e-14
+      },
+      "band_+2": {
+        "mu": 0.21482389620741757,
+        "events": 9.140420013705835,
+        "rmue": 2.148238962074176e-14
+      }
+    },
+    "empirical": {
+      "band_-2": {
+        "mu": 0.05532606060569179,
+        "events": 2.354037146554211,
+        "rmue": 5.5326060605691794e-15
+      },
+      "band_-1": {
+        "mu": 0.07136316007288185,
+        "events": 3.036390588231682,
+        "rmue": 7.136316007288186e-15
+      },
+      "band_+0": {
+        "mu": 0.09308753303442996,
+        "events": 3.9607286014069962,
+        "rmue": 9.308753303442997e-15
+      },
+      "band_+1": {
+        "mu": 0.11416675389494074,
+        "events": 4.857616404059584,
+        "rmue": 1.1416675389494076e-14
+      },
+      "band_+2": {
+        "mu": 0.17478247669967362,
+        "events": 7.436720384813541,
+        "rmue": 1.7478247669967363e-14
+      }
+    },
+    "observed": {
+      "n": 44.0,
+      "mu": 1.2179867389012542,
+      "events": 51.82342635631298,
+      "rmue": 1.2179867389012543e-13,
+      "scan_mu_max": 1.9311228023349445,
+      "scan_dir": "cutcount/observed_scan"
+    }
+  },
+  "dropped_systematics": [],
+  "card": "cutcount/eminus_count_card.yaml",
+  "confidence_level": 0.9
 }
