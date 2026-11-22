@@ -345,16 +345,17 @@
             <div class="section" id="documentation">
                 <h2>Documentation</h2>
                 <h3 style="color: #667eea; margin: 20px 0 10px;">Producing this page</h3>
-                <p style="line-height: 1.8;">From <code>RefAna/pyCount</code>, with the Mu2e ana environment:</p>
+                <p style="line-height: 1.8;">From <code>RefAna</code>. Only <b>official</b> runs are shown here: committed code, every event read, MC inputs, and pyCount, RooCount and Shape in agreement (<code>result.json</code>).</p>
                 <pre style="background: #f5f5f5; padding: 12px; border-radius: 4px; overflow-x: auto;">
-# MDS pseudo-experiment: sensitivity + validation (RooCount and Shape need a muse build of RefAna)
-python run_reference_analysis.py --pe /exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1
+# from committed code; RooCount and Shape need a muse build of RefAna
+bin/refana validate --official --pe /exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1
 
-# SAM dataset: cut flows and yields only
-python run_reference_analysis.py --defname &lt;SAM definition&gt; --location disk --jobs 8</pre>
+# an official run is copied here automatically; an existing one with
+bin/refana publish pyCount/runs/&lt;run dir&gt;</pre>
                 <p style="line-height: 1.8;">Outputs and provenance (git commit, cut profile, input checksums) are in
                     <code>pyCount/runs/&lt;stamp&gt;_&lt;dataset&gt;/</code>; the files shown here are copied from there.
-                    Cut definitions: <code>RefAna/config/cuts.yaml</code>. Validation: <code>RefAna/compare/README.md</code>.</p>
+                    Cut definitions: <code>RefAna/config/cuts.yaml</code>. Validation: <code>RefAna/compare/README.md</code>.
+                    To check your own analysis against the reference: <code>refana score</code> and <code>refana explain</code> (<code>RefAna/README.md</code>).</p>
                 <h3 style="color: #667eea; margin: 20px 0 10px;">Resources</h3>
                 <ul style="margin-left: 30px; line-height: 1.8;">
                     <li><a href="https://github.com/Mu2e/pyfitter" target="_blank">Mu2e/pyfitter</a>: the analysis whose selection and model are the reference</li>
@@ -385,7 +386,7 @@ python run_reference_analysis.py --defname &lt;SAM definition&gt; --location dis
             return h + '</tbody></table>';
         }
 
-        async function loadOverview(run) {
+        async function loadOverview(run, res) {
             if (!run) { setStatus('overview-status', 'warning', 'run.json not found: no run has been published here yet.'); return; }
             const ss = run.signal_set || {};
             const dataset = run.mode === 'mds'
@@ -400,7 +401,14 @@ python run_reference_analysis.py --defname &lt;SAM definition&gt; --location dis
                 const v = s.validation ? `, validation <span class="verdict ${s.validation}">${s.validation}</span>` : '';
                 rows.push([`e${sign === 'minus' ? '&minus;' : '+'} channel`, `profile <code>${esc(s.profile)}</code> (cut set ${esc(s.cutset)}), ${esc(s.status)}${v}`]);
             });
-            setStatus('overview-status', 'success', 'Run loaded');
+            // Only official runs are published here (refana publish); say so, and warn otherwise
+            if (res && res.official) {
+                rows.push(['Verdict', `<span class="verdict ${esc(res.verdict)}">${esc(res.verdict)}</span> official reference run (result.json schema v${esc(res.schema_version)})`]);
+                setStatus('overview-status', 'success', `Official reference run, verdict <span class="verdict ${esc(res.verdict)}">${esc(res.verdict)}</span>: committed code, every event read, inputs are MC, validated against RooCount and Shape.`);
+            } else {
+                const why = res ? (res.not_official_because || []).map(esc).join('; ') : 'no result.json (published before official runs were required)';
+                setStatus('overview-status', 'warning', `Not an official run: ${why || 'see result.json'}. Numbers on this page are provisional.`);
+            }
             document.getElementById('overview-container').innerHTML = table(['', ''], rows);
         }
 
@@ -514,7 +522,8 @@ python run_reference_analysis.py --defname &lt;SAM definition&gt; --location dis
 
         document.addEventListener('DOMContentLoaded', async () => {
             const run = await getJSON('run.json');
-            loadOverview(run);
+            const res = await getJSON('result.json');
+            loadOverview(run, res);
             for (const p of PREFIXES) {
                 loadSensitivity(p, run);
                 loadCounts(p);
