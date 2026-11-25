@@ -375,39 +375,39 @@
   "file_list": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt",
   "file_list_sha256": "94700207f09435dab296a17caedf10f635f400ae35e439b28a04c030abe12eb3",
   "n_files": 8,
-  "pycount_run": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1",
-  "pycount_run_commit": "56ce4a8b2202ebbb1c78d295a10e38b5baf7c0bf",
-  "pycount_run_dirty": true,
+  "pycount_run": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1",
+  "pycount_run_commit": "093973e7891828f3d46f0f9b51ce648dc61d656b",
+  "pycount_run_dirty": false,
   "runs": {
    "pyCount": {
     "reused": true
    },
    "roocount": {
-    "command": "source /cvmfs/mu2e.opensciencegrid.org/setupmu2e-art.sh && cd /exp/mu2e/app/users/sophie/newOffline && muse setup -q e29:p110 && cd /exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1/validation_eminus/roocount && RooCount /exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt /exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1/validation_eminus/roocount/roocount.root MDS4b_CeMLeadingLog_1e-13_pe1 run1a minus",
-    "elapsed_s": 615.6
+    "command": "source /cvmfs/mu2e.opensciencegrid.org/setupmu2e-art.sh && cd /exp/mu2e/app/users/sophie/newOffline && muse setup -q e29:p110 && cd /exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1/validation_eminus/roocount && RooCount /exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt /exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1/validation_eminus/roocount/roocount.root MDS4b_CeMLeadingLog_1e-13_pe1 run1a minus",
+    "elapsed_s": 613.9
    },
    "shape": {
-    "command": "source /cvmfs/mu2e.opensciencegrid.org/setupmu2e-art.sh && cd /exp/mu2e/app/users/sophie/newOffline && muse setup -q e29:p110 && cd /exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1/validation_eminus/shape && RefAnaShape /exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt MDS4b_CeMLeadingLog_1e-13_pe1 true 100.0 110.0 475.0 1650.0 2D run1a /exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1/validation_eminus/shape/shape.root",
-    "elapsed_s": 616.2
+    "command": "source /cvmfs/mu2e.opensciencegrid.org/setupmu2e-art.sh && cd /exp/mu2e/app/users/sophie/newOffline && muse setup -q e29:p110 && cd /exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1/validation_eminus/shape && RefAnaShape /exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt MDS4b_CeMLeadingLog_1e-13_pe1 true 100.0 110.0 475.0 1650.0 2D run1a /exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1/validation_eminus/shape/shape.root",
+    "elapsed_s": 615.2
    }
   },
   "commit": {
-   "RefAna": "56ce4a8-dirty",
+   "RefAna": "093973e",
    "EventNtuple": "0e07c92"
   },
   "user": "sophie",
   "host": "mu2egpvm05.fnal.gov",
-  "started": "2026-11-19T10:04:15",
-  "finished": "2026-11-19T10:14:32",
+  "started": "2026-11-25T08:26:19",
+  "finished": "2026-11-25T08:36:36",
   "command": [
    "/exp/mu2e/app/users/sophie/newOffline/RefAna/compare/mds_yields.py",
    "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1",
    "--sign",
    "minus",
    "--pycount-run",
-   "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1",
+   "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1",
    "--out",
-   "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1/validation_eminus"
+   "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1/validation_eminus"
   ]
  },
  "checks": [
@@ -443,9 +443,9 @@
   },
   {
    "check": "pyCount run provenance",
-   "status": "WARN",
-   "detail": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1 at commit 56ce4a8b with uncommitted changes: rerun with --rerun-pycount for a run from committed code"
+   "status": "PASS",
+   "detail": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1 at commit 093973e7"
   }
  ],
- "verdict": "WARN"
+ "verdict": "PASS"
 }

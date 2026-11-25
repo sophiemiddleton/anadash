@@ -1,0 +1,532 @@
+{
+ "schema": "refana.result",
+ "schema_version": 1,
+ "generated": "2026-11-25T08:36:37",
+ "generated_by": {
+  "user": "sophie",
+  "refana_git": {
+   "commit": "093973e7891828f3d46f0f9b51ce648dc61d656b",
+   "branch": "working",
+   "dirty": false,
+   "modified_tracked_files": []
+  }
+ },
+ "run_dir": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1",
+ "mode": "mds",
+ "dataset": {
+  "name": "MDS4b_CeMLeadingLog_1e-13_pe1",
+  "file_list": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt",
+  "file_list_sha256": "94700207f09435dab296a17caedf10f635f400ae35e439b28a04c030abe12eb3",
+  "n_files": 8,
+  "signal_set": {
+   "file_list_given": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt",
+   "mixed_files": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt",
+   "n_files": 8,
+   "signal_set_dir": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13",
+   "label": "CeMLeadingLog_1e-13",
+   "pe": 1,
+   "env_file": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/signal.env",
+   "signal_sample": "CeMLeadingLogOnSpill",
+   "signal_process": "CE",
+   "rmue_injected": 1e-13,
+   "onspill_s": 800801.0,
+   "livetime_s": 2479260.0,
+   "recoeff": 0.4009075,
+   "nsig_injected": 138,
+   "mds": "MDS4b",
+   "mds_dataset": "nts.mu2e.ensembleNtuple.MDC2025-001_MDS4b.root"
+  }
+ },
+ "signs": {
+  "minus": {
+   "status": "success",
+   "profile": {
+    "name": "nominal_minus",
+    "cutset": "run1a",
+    "thresholds": {
+     "trkpid_threshold": 0.574,
+     "tandip_lower": 0.56,
+     "tandip_upper": 0.8787,
+     "trkqual_threshold": 0.145,
+     "t0err_threshold": 0.81,
+     "nhits_threshold": 17,
+     "crv_veto_dt_lower": 0.0,
+     "crv_veto_dt_upper": 150.0,
+     "mom_range_t0_lower": 475.0,
+     "mom_range_t0_upper": 1650.0,
+     "signal_region_p_lower": 103.34,
+     "signal_region_p_upper": 104.74,
+     "signal_region_t_lower": 640.0,
+     "signal_region_t_upper": 1650.0,
+     "upstream_veto_dt_lower": 40.0,
+     "upstream_veto_dt_upper": 110.0,
+     "multi_trk_veto_dt": 150.0,
+     "d0_cut_lower": -60.0,
+     "d0_cut_upper": 94.0,
+     "tsda_veto": true,
+     "mom_lo": 100.0,
+     "mom_hi": 110.0,
+     "multi_trk_veto": true
+    },
+    "signal_window": {
+     "mom": [
+      103.34,
+      104.74
+     ],
+     "time": [
+      640.0,
+      1650.0
+     ]
+    },
+    "cuts_yaml_sha256": "38fbc827b6e2e0bb923d52da62bee102b7004678372ed64236726083015cc39c"
+   },
+   "code": {
+    "commit": "093973e7891828f3d46f0f9b51ce648dc61d656b",
+    "branch": "working",
+    "dirty": false,
+    "modified_tracked_files": []
+   },
+   "inputs": {
+    "file_list": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/pe_1/mixed_files.txt",
+    "file_list_sha256": "94700207f09435dab296a17caedf10f635f400ae35e439b28a04c030abe12eb3",
+    "n_files": 8,
+    "mds_signal_env": "/exp/mu2e/data/users/mu2epro/ensembles/MDS4/MDS4b/signal/CeMLeadingLog_1e-13/signal.env",
+    "mds_signal_env_sha256": "739ff6ce1ea24bafbf48a6641c1d15d07d863b4927a09fe5c8581fc25c9e3f9c",
+    "is_mc": true
+   },
+   "processed": {
+    "units_planned": 29,
+    "units_ok": 29,
+    "units_missing": [],
+    "n_events": 1272050,
+    "n_events_expected": 1272050,
+    "chunk_size": 50000
+   },
+   "cutflow": [
+    {
+     "cut": "all_events",
+     "events": 1272050
+    },
+    {
+     "cut": "has_a_track",
+     "events": 661053
+    },
+    {
+     "cut": "is_good_track",
+     "events": 659080
+    },
+    {
+     "cut": "has_trk_front_seg",
+     "events": 641167
+    },
+    {
+     "cut": "is_reco_electron_or_positron",
+     "events": 620836
+    },
+    {
+     "cut": "has_downstream",
+     "events": 586925
+    },
+    {
+     "cut": "charge_selection",
+     "events": 385896
+    },
+    {
+     "cut": "or_trigger",
+     "events": 208145
+    },
+    {
+     "cut": "upstream_veto",
+     "events": 192146
+    },
+    {
+     "cut": "no_multi_trk_veto",
+     "events": 174529
+    },
+    {
+     "cut": "good_trkpid",
+     "events": 100183
+    },
+    {
+     "cut": "pz_over_pt",
+     "events": 71147
+    },
+    {
+     "cut": "within_d0",
+     "events": 67680
+    },
+    {
+     "cut": "st_boundary",
+     "events": 66843
+    },
+    {
+     "cut": "has_st",
+     "events": 64213
+    },
+    {
+     "cut": "no_opa",
+     "events": 63874
+    },
+    {
+     "cut": "no_tsda",
+     "events": 63688
+    },
+    {
+     "cut": "good_trkqual",
+     "events": 54479
+    },
+    {
+     "cut": "has_hits",
+     "events": 54228
+    },
+    {
+     "cut": "within_t0err",
+     "events": 54228
+    },
+    {
+     "cut": "no_crv_veto",
+     "events": 53952
+    },
+    {
+     "cut": "in_mom_range",
+     "events": 543
+    },
+    {
+     "cut": "within_t0_475",
+     "events": 219
+    }
+   ],
+   "yields": {
+    "labels": "MC truth of the track primary (mds_sensitivity.track_labels)",
+    "window": {
+     "mom": [
+      103.34,
+      104.74
+     ],
+     "time": [
+      640.0,
+      1650.0
+     ]
+    },
+    "selected": {
+     "CE": 73,
+     "Cosmic": 53,
+     "DIO": 49,
+     "RMC": 2,
+     "RPC": 42
+    },
+    "selected_total": 219,
+    "signal_window": {
+     "CE": 42,
+     "Cosmic": 2
+    },
+    "signal_window_total": 44
+   },
+   "sensitivity": {
+    "method": "MDS pseudo-experiment, pyfitter counting_stats empirical",
+    "confidence_level": 0.9,
+    "n_observed": 44,
+    "background_expected": 2.0,
+    "background_by_process": {
+     "Cosmic": 2
+    },
+    "signal_selected": 42,
+    "selection_efficiency": 0.30434782608695654,
+    "signal_efficiency": 0.12201532608695653,
+    "signal_efficiency_stat_err": 0.015703115066001663,
+    "single_event_sensitivity": 2.3502628531872106e-15,
+    "expected_limit_rmue": 9.308753303442997e-15,
+    "expected_limit_rmue_band68": [
+     7.136316007288186e-15,
+     1.1416675389494076e-14
+    ],
+    "asimov_limit_rmue": 7.928723734828916e-15,
+    "observed_limit_rmue": 1.2179867389012543e-13,
+    "rmue": 9.871103983386284e-14,
+    "uncertainties": {
+     "n_observed": {
+      "value": 44,
+      "stat": [
+       6.607939997707803,
+       7.683510071294997
+      ],
+      "total": [
+       6.607939997707803,
+       7.683510071294997
+      ]
+     },
+     "background_expected": {
+      "value": 2.0,
+      "mc_stat": [
+       1.2918145601810287,
+       2.6378596234552454
+      ],
+      "syst": [
+       0.3646431135879092,
+       0.3646431135879092
+      ],
+      "total": [
+       1.3422926127274892,
+       2.662943482941862
+      ]
+     },
+     "background_by_process": {
+      "Cosmic": {
+       "value": 2,
+       "mc_stat": [
+        1.2918145601810287,
+        2.6378596234552454
+       ],
+       "syst": [
+        0.3646431135879092,
+        0.3646431135879092
+       ],
+       "total": [
+        1.3422926127274892,
+        2.662943482941862
+       ]
+      }
+     },
+     "signal_efficiency": {
+      "value": 0.12201532608695653,
+      "mc_stat": [
+       0.015703115066001663,
+       0.015703115066001663
+      ],
+      "total": [
+       0.015703115066001663,
+       0.015703115066001663
+      ]
+     },
+     "single_event_sensitivity": {
+      "value": 2.3502628531872106e-15,
+      "mc_stat": [
+       3.0247387113194337e-16,
+       3.0247387113194337e-16
+      ],
+      "syst": [
+       2.2400397512469876e-16,
+       2.2400397512469876e-16
+      ],
+      "total": [
+       3.763883945995282e-16,
+       3.763883945995282e-16
+      ]
+     },
+     "rmue": {
+      "value": 9.871103983386284e-14,
+      "stat": [
+       1.481650085183919e-14,
+       1.6382947229801305e-14
+      ],
+      "syst": [
+       8.199956537999825e-15,
+       1.0827809795938095e-14
+      ],
+      "mc_stat": [
+       1.4135945963398135e-14,
+       1.3061664024167933e-14
+      ],
+      "total": [
+       2.2058852032636455e-14,
+       2.3584942060384843e-14
+      ],
+      "method": "profile likelihood on the card (pyfitter CountingModel), 68% interval, Rmue >= 0"
+     },
+     "expected_limit_rmue": {
+      "value": 9.308753303442997e-15,
+      "mc_stat": [
+       2.8732925072228137e-15,
+       3.868088519811972e-15
+      ],
+      "total": [
+       2.8732925072228137e-15,
+       3.868088519811972e-15
+      ],
+      "band68": [
+       7.136316007288186e-15,
+       1.1416675389494076e-14
+      ]
+     },
+     "asimov_limit_rmue": {
+      "value": 7.928723734828916e-15,
+      "mc_stat": [
+       2.447324765895072e-15,
+       3.2946415331587954e-15
+      ],
+      "total": [
+       2.447324765895072e-15,
+       3.2946415331587954e-15
+      ]
+     },
+     "observed_limit_rmue": {
+      "value": 1.2179867389012543e-13,
+      "mc_stat": [
+       1.6920576502565558e-14,
+       1.5989772621487296e-14
+      ],
+      "total": [
+       1.6920576502565558e-14,
+       1.5989772621487296e-14
+      ]
+     }
+    },
+    "window": {
+     "mom": [
+      103.34,
+      104.74
+     ],
+     "time": [
+      640.0,
+      1650.0
+     ]
+    },
+    "pyfitter": {
+     "dir": "/exp/mu2e/app/users/sophie/pyfitter-mu2e",
+     "layout": "package",
+     "commit": "4b640840bc2af1d01e5d59658ad461c09576858e",
+     "origin": "git@github.com:Mu2e/pyfitter.git",
+     "dirty": false,
+     "modified": false
+    },
+    "file": "eminus_sensitivity_result.json"
+   },
+   "validation": {
+    "verdict": "PASS",
+    "checks": [
+     {
+      "check": "cutflow pyCount = RooCount",
+      "status": "PASS",
+      "detail": "23 cuts compared; cuts in only one: signal_region"
+     },
+     {
+      "check": "selected tracks pyCount = RooCount",
+      "status": "PASS",
+      "detail": "219 in both, 0 only pyCount, 0 only RooCount; max |dp| 0 MeV/c, max |dt| 0 ns"
+     },
+     {
+      "check": "MC labels agree",
+      "status": "PASS",
+      "detail": "all labels agree"
+     },
+     {
+      "check": "tracks in fit range RooCount = Shape",
+      "status": "PASS",
+      "detail": "219 in both, 0 only RooCount, 0 only Shape"
+     },
+     {
+      "check": "Shape fit converged",
+      "status": "PASS",
+      "detail": "status 0, covQual 3"
+     },
+     {
+      "check": "Shape yields within 3 sigma of MC truth",
+      "status": "PASS",
+      "detail": "CE -0.9, DIO -0.4, Cosmic +0.5, RPC +1.1, RMC +0.2"
+     },
+     {
+      "check": "pyCount run provenance",
+      "status": "PASS",
+      "detail": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1 at commit 093973e7"
+     }
+    ],
+    "file": "validation_eminus.json",
+    "pycount_run": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1"
+   }
+  }
+ },
+ "checks": [
+  {
+   "check": "pyCount run finished (minus)",
+   "status": "PASS",
+   "detail": "status success"
+  },
+  {
+   "check": "all events read (minus)",
+   "status": "PASS",
+   "detail": "1272050 of 1272050 events, 0 work units missing"
+  },
+  {
+   "check": "committed code (minus)",
+   "status": "PASS",
+   "detail": "commit 093973e789"
+  },
+  {
+   "check": "inputs are MC (blinding) (minus)",
+   "status": "PASS",
+   "detail": "every input file has MC truth"
+  },
+  {
+   "check": "sensitivity (minus)",
+   "status": "PASS",
+   "detail": "from the MDS bookkeeping"
+  },
+  {
+   "check": "pyfitter at pin (minus)",
+   "status": "PASS",
+   "detail": "4b640840b = pin, clean (git@github.com:Mu2e/pyfitter.git)"
+  },
+  {
+   "check": "validation vs RooCount/Shape (minus)",
+   "status": "PASS",
+   "detail": "verdict PASS"
+  }
+ ],
+ "verdict": "PASS",
+ "official": true,
+ "not_official_because": [],
+ "artifacts": {
+  "_processing_status.txt": "27dcfff4c3e0236bf7bdc81cce96960835642d7f501a67fb4efff2f47b44e70d",
+  "_work_units_minus.txt": "bf4e176fc9320df15508416ab9933e2b694385855f4aed507178f69359ef988c",
+  "analysis_report.aux": "0b9d2858fc41da8a5abaa6b5f39c5eb91cd5d3ebec059fcb44e47bb309f2f4ef",
+  "analysis_report.log": "83a334b07406fee5274f2a87409af32478d82d77c451424a8b18a3264da8286d",
+  "analysis_report.pdf": "fffbdf59134d24efa6308ff4428dbfb09e96035ef4f8cb01ff999b57fb3eb453",
+  "analysis_report.tex": "9898240b20f59bf3b6712089d2ff71fa56de3f6ccc82351a58729fbe0ab4931b",
+  "eminus_1D_Mom_selected.png": "6b94571920c94cae9c6a3cee3232a82b24edd2b8de0a242d6c481da5ba41a122",
+  "eminus_1D_Time_selected.png": "86df3a6116c6c55307ff3ddcc75877d145d5b7d7adb0737366d6543a3bfc7564",
+  "eminus_2D_selected.png": "8f26ab56a4bbcf8864c6e64ac422504b42e3c815ecd3d732c1e34e7e3373fe50",
+  "eminus_cut_stats.csv": "fc09d4b2c1b3f2ada278716533f3e2082d8188768edbad5a9b76aaa358e08040",
+  "eminus_process_counts.json": "1db7ca9bbe5d43776da402f210a80b2e20704baad48df6d9b3a4f39221c5a0f9",
+  "eminus_sensitivity_result.json": "135a63bd7c03105a54f291ca8f18b5c2c49de23d96c778bd161940b103e3af33",
+  "eminus_yields.json": "4aa8956a02883d921ee1cb7889e9c31fe719b274fd7f40dfb073baa41d7741e6",
+  "filelist_minus.txt": "94700207f09435dab296a17caedf10f635f400ae35e439b28a04c030abe12eb3",
+  "manifest_minus.yaml": "d805d37a52e41aa990f3adee4aab550ece27a2a89d71d6cff1f3def509f0041e",
+  "passing_events_count.txt": "b3f1c2e21694bd930715c8675b728a0c2dc792c0349bdfc6a85e40f0f8a21db2",
+  "provenance_minus.json": "3afcfc2392045e43c773b519a0d81cc46a2bbf6932d17ff1fb29c95e538e7d03",
+  "run.json": "4ddf42d15b2f4b0dce9ad1494b7fea0c5f13102dd1b3f43d7997e82ccc338d64",
+  "shape_fit_mom_eminus.png": "ed5670c2c06f155c76eb6178a7a87956509eeb0a51ebe1215c1fe7472742f451",
+  "shape_fit_time_eminus.png": "e63640af509b8713628787ed7e80a8362ce7a64b291a4eba51061811db3752dc",
+  "validation_eminus.json": "e4b68222f7c715afea16051f5541783ea56c3a84904f4f50ea1bee4cd44db361",
+  "validation_eminus.log": "c6cecc10e088543b358fe3bd2fc28f5a2a99aaf532c63a769fb3e9b1fa904eb7",
+  "validation_eminus.md": "5b43938ac1e847c432b53bc45b4861154fa859989bf52c6b808df4430f01840c",
+  "cutcount/eminus_count_card.yaml": "cd277d3d60137db38626d4fa45afcaa00e19aa32f03c6cef99dbbb2e75535db8",
+  "cutcount/eminus_count_empirical_cls_scan.npz": "15e6532b787995a3c2092b6b53fedd0988cfde283adb4a2e31e04fe5827e7bf0",
+  "cutcount/eminus_count_empirical_cls_scan.png": "2a425842d643f789c6d9ee05bc4beaf4d11a9632607673a6c842668f3da4bc15",
+  "cutcount/eminus_count_limits_empirical.yaml": "ef8bd4701e00ec42bcbb8b4271ebd55f1023c018f7ff6e814c09a8d5324b2343",
+  "cutcount/eminus_sensitivity.json": "d0ff24b31c31e188946a24e5dcb0441c5413ce4966bffaf9d8c59047cca8b3e8",
+  "cutcount/eminus_window_counts.csv": "e4fe453b9fda2514722dfca762919034467bd8b19c00c60c69cd4845e60e8668",
+  "cutcount/observed_scan/count_empirical_cls_scan.npz": "ca705739b7574083666acc2b0a510eddb3007f53df88a0d7e8fb2574211a28bc",
+  "cutcount/observed_scan/count_empirical_cls_scan.png": "d047e5d9c2e05f825944643fe8d6aef933b5b424f9f497b323447cb634358e0d",
+  "cutcount/observed_scan/count_limits_empirical.yaml": "27718105efcbfd8f7ea96419ad7ba6da2d181e626df3fafafd879693646ee4c5",
+  "cutflows/MDS4b_CeMLeadingLog_1e-13_pe1_eminus.csv": "f0622d04a2c0a0a78ce2d6f59985d8eb7ed950c4b8d6b636593da18526be3ab4",
+  "parquet/MDS4b_CeMLeadingLog_1e-13_pe1_eminus_CE_postcut.parquet": "123c559b2903bf01c8de9db8bb5befafc6fcd775bfe8db78b314245c4a202e7b",
+  "parquet/MDS4b_CeMLeadingLog_1e-13_pe1_eminus_Cosmic_postcut.parquet": "0e00e0f50c6ab456bf5e0d20703db7535d7987adeaf9baae8f837c8524f99392",
+  "parquet/MDS4b_CeMLeadingLog_1e-13_pe1_eminus_DIO_postcut.parquet": "ba0f31cf9b785253a633522ffec52be0d4944a1cc8f1687a6c76e93171057372",
+  "parquet/MDS4b_CeMLeadingLog_1e-13_pe1_eminus_RMC_postcut.parquet": "9cc595cc98b146b98b53b7945d970c1da80ecf8c4682a4972161b2bf861fe069",
+  "parquet/MDS4b_CeMLeadingLog_1e-13_pe1_eminus_RPC_postcut.parquet": "62f305308ce81e9220930752e47868db3ae06c148e4a78625fe913af060b3556",
+  "validation_eminus/report.md": "5b43938ac1e847c432b53bc45b4861154fa859989bf52c6b808df4430f01840c",
+  "validation_eminus/tracks_diff.csv": "2bf4683d3d7601692be27d49675e16be79b3388183965cd7f14852c609dbe5a6",
+  "validation_eminus/yields.json": "e4b68222f7c715afea16051f5541783ea56c3a84904f4f50ea1bee4cd44db361",
+  "validation_eminus/roocount/roocount.root": "c1a27cc58b786a9325b4181143df43edf5c648ac58a1a63ea649a61ca4b9e560",
+  "validation_eminus/roocount/run.log": "029fc27eb2a42bd2057d28a7644802b4e00808ae1a00939f681b65b8f6953659",
+  "validation_eminus/shape/CombinedFitResultMom.png": "ed5670c2c06f155c76eb6178a7a87956509eeb0a51ebe1215c1fe7472742f451",
+  "validation_eminus/shape/CombinedFitResultMom.root": "cb2dfa213eb314907cb70c1becd7aaba4db034eb65952e48dd8347361795c9c6",
+  "validation_eminus/shape/CombinedFitResultTime.png": "e63640af509b8713628787ed7e80a8362ce7a64b291a4eba51061811db3752dc",
+  "validation_eminus/shape/CombinedFitResultTime.root": "d748f229c96114e8c9b09580eb86c8ee6d5f0660562c9aabcfa5686e03108044",
+  "validation_eminus/shape/mom.root": "6ba567a6195e24b6e319b52a452f6e8b0522f088d7394f7d8c8924a530323fd5",
+  "validation_eminus/shape/run.log": "40758abc29db296afec31029d5a17ce5ae225e800236936a58ca3f8bb06158aa",
+  "validation_eminus/shape/shape.root": "df3ea936320d8d1231cd349ebef27fef8addf731c247634e6c9ba17ff82619da",
+  "validation_eminus/shape/sigma.root": "709408b4c6bca5f7714dc7382177a71fee67a69e57b29f3487113a6bbb90f07f",
+  "validation_eminus/shape/time.root": "73a3be5e544b30835f17833c0688465c8e948ca272680ba33f60b9b62a9f3b35"
+ }
+}

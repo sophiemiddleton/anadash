@@ -22,18 +22,18 @@
  "location": "local",
  "files_used": 8,
  "files_total": 8,
- "run_dir": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1",
- "date": "2026-11-19T10:14:32",
- "git_commit": "56ce4a8b2202ebbb1c78d295a10e38b5baf7c0bf",
- "git_dirty": true,
+ "run_dir": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1",
+ "date": "2026-11-25T08:36:36",
+ "git_commit": "093973e7891828f3d46f0f9b51ce648dc61d656b",
+ "git_dirty": false,
  "signs": {
   "minus": {
    "profile": "nominal_minus",
    "cutset": "run1a",
    "status": "success",
-   "git": "56ce4a8b2202ebbb1c78d295a10e38b5baf7c0bf",
-   "dirty": true,
-   "validation": "WARN"
+   "git": "093973e7891828f3d46f0f9b51ce648dc61d656b",
+   "dirty": false,
+   "validation": "PASS"
   }
  }
 }

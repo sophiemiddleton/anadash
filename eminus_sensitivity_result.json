@@ -84,13 +84,145 @@
   ],
   "asimov_limit_rmue": 7.928723734828916e-15,
   "observed_limit_rmue": 1.2179867389012543e-13,
+  "rmue": 9.871103983386284e-14,
+  "uncertainties": {
+    "n_observed": {
+      "value": 44,
+      "stat": [
+        6.607939997707803,
+        7.683510071294997
+      ],
+      "total": [
+        6.607939997707803,
+        7.683510071294997
+      ]
+    },
+    "background_expected": {
+      "value": 2.0,
+      "mc_stat": [
+        1.2918145601810287,
+        2.6378596234552454
+      ],
+      "syst": [
+        0.3646431135879092,
+        0.3646431135879092
+      ],
+      "total": [
+        1.3422926127274892,
+        2.662943482941862
+      ]
+    },
+    "background_by_process": {
+      "Cosmic": {
+        "value": 2,
+        "mc_stat": [
+          1.2918145601810287,
+          2.6378596234552454
+        ],
+        "syst": [
+          0.3646431135879092,
+          0.3646431135879092
+        ],
+        "total": [
+          1.3422926127274892,
+          2.662943482941862
+        ]
+      }
+    },
+    "signal_efficiency": {
+      "value": 0.12201532608695653,
+      "mc_stat": [
+        0.015703115066001663,
+        0.015703115066001663
+      ],
+      "total": [
+        0.015703115066001663,
+        0.015703115066001663
+      ]
+    },
+    "single_event_sensitivity": {
+      "value": 2.3502628531872106e-15,
+      "mc_stat": [
+        3.0247387113194337e-16,
+        3.0247387113194337e-16
+      ],
+      "syst": [
+        2.2400397512469876e-16,
+        2.2400397512469876e-16
+      ],
+      "total": [
+        3.763883945995282e-16,
+        3.763883945995282e-16
+      ]
+    },
+    "rmue": {
+      "value": 9.871103983386284e-14,
+      "stat": [
+        1.481650085183919e-14,
+        1.6382947229801305e-14
+      ],
+      "syst": [
+        8.199956537999825e-15,
+        1.0827809795938095e-14
+      ],
+      "mc_stat": [
+        1.4135945963398135e-14,
+        1.3061664024167933e-14
+      ],
+      "total": [
+        2.2058852032636455e-14,
+        2.3584942060384843e-14
+      ],
+      "method": "profile likelihood on the card (pyfitter CountingModel), 68% interval, Rmue >= 0"
+    },
+    "expected_limit_rmue": {
+      "value": 9.308753303442997e-15,
+      "mc_stat": [
+        2.8732925072228137e-15,
+        3.868088519811972e-15
+      ],
+      "total": [
+        2.8732925072228137e-15,
+        3.868088519811972e-15
+      ],
+      "band68": [
+        7.136316007288186e-15,
+        1.1416675389494076e-14
+      ]
+    },
+    "asimov_limit_rmue": {
+      "value": 7.928723734828916e-15,
+      "mc_stat": [
+        2.447324765895072e-15,
+        3.2946415331587954e-15
+      ],
+      "total": [
+        2.447324765895072e-15,
+        3.2946415331587954e-15
+      ]
+    },
+    "observed_limit_rmue": {
+      "value": 1.2179867389012543e-13,
+      "mc_stat": [
+        1.6920576502565558e-14,
+        1.5989772621487296e-14
+      ],
+      "total": [
+        1.6920576502565558e-14,
+        1.5989772621487296e-14
+      ]
+    }
+  },
   "pyfitter": {
-    "dir": "/exp/mu2e/app/users/sophie/pyfitter",
-    "commit": "b2ae48bf8d11a8707debdb9aa6ded2217dd7ff8c",
+    "dir": "/exp/mu2e/app/users/sophie/pyfitter-mu2e",
+    "layout": "package",
+    "commit": "4b640840bc2af1d01e5d59658ad461c09576858e",
+    "origin": "git@github.com:Mu2e/pyfitter.git",
+    "dirty": false,
     "modified": false
   },
   "pyfitter_limits": {
-    "card": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261119-100104_MDS4b_CeMLeadingLog_1e-13_pe1/cutcount/eminus_count_card.yaml",
+    "card": "/exp/mu2e/app/users/sophie/newOffline/RefAna/pyCount/runs/20261125-082255_refana_pe_1/cutcount/eminus_count_card.yaml",
     "method": "empirical",
     "confidence_level": 0.9,
     "signal_yield": 42.548432344232985,
