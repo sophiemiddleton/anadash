@@ -379,6 +379,24 @@ bin/refana publish pyCount/runs/&lt;run dir&gt;</pre>
             return String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
         }
         function sci(x, d = 2) { return (x === null || x === undefined) ? '&ndash;' : Number(x).toExponential(d); }
+        // value with its 68% uncertainties per source (mds_sensitivity uncertainty entry): stat, MC stat, syst
+        function unc(e, digits = 2, sciNotation = true) {
+            if (!e) return '&ndash;';
+            const srcs = [['stat', 'stat'], ['mc_stat', 'MC'], ['syst', 'syst']].filter(([s]) => e[s] && (e[s][0] || e[s][1]));
+            const isInt = Number.isInteger(e.value) && !sciNotation;
+            const ref = Math.max(Math.abs(e.value), ...srcs.map(([s]) => Math.max(...e[s]))) || 1;
+            const k = sciNotation ? Math.floor(Math.log10(ref)) : 0, sc = Math.pow(10, k);
+            const f = x => (x / sc).toFixed(isInt ? 1 : digits);
+            let h = isInt ? String(e.value) : f(e.value);
+            srcs.forEach(([s, lab]) => {
+                const [m, p] = e[s];
+                h += Math.abs(m - p) <= 0.05 * Math.max(m, p) ? ` &plusmn; ${f(p)} <span class="muted">${lab}</span>`
+                    : ` <sup>+${f(p)}</sup><sub>&minus;${f(m)}</sub> <span class="muted">${lab}</span>`;
+            });
+            if (k) h = `(${h}) &times; 10<sup>${k}</sup>`;
+            if (e.band68) h += ` <span class="muted">[68% band ${sci(e.band68[0])}, ${sci(e.band68[1])}]</span>`;
+            return h;
+        }
         function setStatus(id, cls, html) { const el = document.getElementById(id); el.className = 'status-box ' + cls; el.innerHTML = html; }
         function table(header, rows) {
             let h = '<table><thead><tr>' + header.map(x => `<th>${x}</th>`).join('') + '</tr></thead><tbody>';
@@ -425,7 +443,20 @@ bin/refana publish pyCount/runs/&lt;run dir&gt;</pre>
             const n = s.normalization, ss = s.signal_set || {};
             const cl = s.confidence_level || (s.pyfitter_limits || {}).confidence_level || 0.9;
             const bkg = Object.entries(s.background_by_process || {}).map(([k, v]) => `${esc(k)} ${v}`).join(', ') || 'none';
-            const rows = [
+            const u = s.uncertainties;
+            const rows = u ? [
+                ['Window', `${s.window.mom[0]}&ndash;${s.window.mom[1]} MeV/c, ${s.window.time[0]}&ndash;${s.window.time[1]} ns`],
+                ['Observed in window', unc(u.n_observed, 1, false)],
+                ['Background in window (MC truth, not rescaled)', unc(u.background_expected, 2, false) + ' ('
+                    + (Object.entries(u.background_by_process || {}).map(([k, e]) => `${esc(k)} ${unc(e, 2, false)}`).join(', ') || 'none') + ')'],
+                ['Signal tracks in window', s.signal_selected],
+                ['Signal efficiency (incl. reco)', unc(u.signal_efficiency, 4, false)],
+                ['Stopped muons', sci(n.stopped_muons)],
+                ['Single-event sensitivity', unc(u.single_event_sensitivity)],
+                ['<b>Fitted R<sub>&mu;e</sub></b> (profile likelihood)', `<b>${unc(u.rmue)}</b>`],
+                [`<b>Expected ${Math.round(cl * 100)}% CL limit on R<sub>&mu;e</sub></b>`, `<b>${unc(u.expected_limit_rmue)}</b>`],
+                [`Observed ${Math.round(cl * 100)}% CL limit on R<sub>&mu;e</sub>`, unc(u.observed_limit_rmue)],
+            ] : [
                 ['Window', `${s.window.mom[0]}&ndash;${s.window.mom[1]} MeV/c, ${s.window.time[0]}&ndash;${s.window.time[1]} ns`],
                 ['Observed in window', s.n_observed],
                 ['Background in window (MC truth, not rescaled)', `${s.background_expected} (${bkg})`],
@@ -438,6 +469,9 @@ bin/refana publish pyCount/runs/&lt;run dir&gt;</pre>
             ];
             if (ss.rmue_injected) rows.push(['Injected R<sub>&mu;e</sub> (this pseudo-experiment)', sci(ss.rmue_injected)]);
             document.getElementById(`sensitivity-container-${prefix}`).innerHTML = table(['Quantity', 'Value'], rows)
+                + (u ? '<p class="muted" style="margin-top: 10px;">Uncertainties (68%): stat = Poisson fluctuation of the observed count; '
+                    + 'MC = finite simulation (binomial on the signal efficiency, Poisson on the background window counts); '
+                    + 'syst = the lnN systematics of pyfitter\'s card. Limits: MC only, with their 68% band over pseudo-experiments.</p>' : '')
                 + `<p class="muted" style="margin-top: 10px;">${esc(s.method)}. Normalisation: ${esc(n.mds)} manifest <code>${esc(n.manifest_sam_file)}</code>, `
                 + `capture rate ${n.captures_per_stopped_muon}, signal set ${esc(ss.label)} pe ${esc(ss.pe)}.</p>`;
             setStatus(id, 'success', 'Sensitivity loaded');
